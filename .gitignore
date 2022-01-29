@@ -1,0 +1,6 @@
+**/xcuserdata
+.DS_Store
+contents.xcworkspacedata
+Build
+*.xcconfig
+MortgageCalc.xcodeproj
