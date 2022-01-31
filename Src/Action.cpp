@@ -8,7 +8,7 @@
 #include "Menu.h"
 #include "Action.hpp"
 
-SequencePrompts::SequencePrompts(MortgageData& d) : dataRef(d) {}
+SequencePrompts::SequencePrompts(MortgageData& d) : Report(d) {}
 
 void SequencePrompts::addQuery(const string &prompt, float &data) {
     inquiriesFloat.push_back(QueryToType<float>(prompt, data));
@@ -32,7 +32,7 @@ void SequencePrompts::execute() {
    for(int i = 0; i < inquiriesBorrower.size(); i++)
         inquiriesBorrower[i].prompt();
    
-   dataRef.update();
+   data.update();
 }
 
 Loop::Loop(Menu* menu, void(Menu::*loopPtr)(), const char exit) : loop(loopPtr), stop(exit) {
