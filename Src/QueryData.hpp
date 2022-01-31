@@ -15,7 +15,7 @@ template<class T>
 class QueryORIGINAL {
 public:
     QueryORIGINAL(const string& txt) : prTxt(txt) {}
-    
+    virtual ~QueryORIGINAL() {}
     virtual void prompt() {
         cout << prTxt;
     }

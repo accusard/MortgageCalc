@@ -35,7 +35,9 @@ void SequencePrompts::execute() {
    dataRef.update();
 }
 
-Loop::Loop(Menu* menu, void(Menu::*loopPtr)(), const char exit) : menuPtr(menu), loop(loopPtr), stop(exit) {}
+Loop::Loop(Menu* menu, void(Menu::*loopPtr)(), const char exit) : loop(loopPtr), stop(exit) {
+    menuPtr = menu;
+}
 
 void Loop::execute() {
     while(menuPtr->inputFront() != stop) {

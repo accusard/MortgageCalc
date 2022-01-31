@@ -12,7 +12,7 @@
 #include <vector>
 
 using namespace std;
-class Action;
+struct Action;
 
 class Menu {
 protected:
