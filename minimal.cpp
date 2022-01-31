@@ -18,7 +18,8 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-
+#include "Menu.h"
+#include "Action.hpp"
 
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWidgets headers)
@@ -130,6 +131,15 @@ bool MyApp::OnInit()
     // success: wxApp::OnRun() will be called which will enter the main message
     // loop and the application will run. If we returned false here, the
     // application would exit immediately.
+    
+    // test AmortizationReport
+    MortgageData newData(400000, 40000, 30, 5.f);
+    Menu main("Main Menu");
+    shared_ptr<Action> action = make_shared<AmortizationReport>(newData);
+    
+    main.bindAction(action);
+    main.run();
+    
     return true;
 }
 

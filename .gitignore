@@ -1,7 +1,6 @@
-**/xcuserdata
 .DS_Store
-contents.xcworkspacedata
 Build
 *.xcconfig
-MortgageCalc.xcodeproj
 libwx_osx_cocoa.dylib
+*.xcworkspacedata
+MortgageCalc.xcodeproj

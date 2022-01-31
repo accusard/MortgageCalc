@@ -66,6 +66,32 @@ void MortgageReport::execute() {
     cout << "Total Mortgage Payments: " << MortgageCalculator::getMonthlyPayments(data) << endl << endl;
 }
 
+void AmortizationReport::execute() {
+    
+    int totalPayments = data.termYears * 12;
+    float remainingBalance = data.amount;
+    float monthlypay = MortgageCalculator::getMonthlyPrincipalAndInterest(data);
+    
+    cout << "Payment : Principal : Interest : Balance\n";
+    for(int i = 1; i <= totalPayments; i++) {
+        float interestPayment = remainingBalance * toMonthlyInterestRate(data.interest);
+        float principalPaid = MortgageCalculator::getMonthlyPrincipalAndInterest(data) - interestPayment;
+        remainingBalance = remainingBalance - principalPaid;
+        
+        if(i == totalPayments && remainingBalance > 0) {
+            principalPaid += remainingBalance;
+            monthlypay = principalPaid + interestPayment;
+            remainingBalance = 0.f;
+        }
+        
+        cout << i << " : ";
+        cout << monthlypay << " : ";
+        cout << principalPaid << " : ";
+        cout << interestPayment << " : ";
+        cout << remainingBalance << endl;
+    }
+}
+
 void BorrowerReport::execute() {
     if(data.size() != 0) {
         for(auto b : data) {

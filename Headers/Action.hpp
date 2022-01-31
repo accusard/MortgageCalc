@@ -8,6 +8,7 @@
 #ifndef Action_hpp
 #define Action_hpp
 
+#include <map>
 #include "MortgageCalculator.h"
 
 class Menu;
@@ -40,6 +41,14 @@ private:
     
 };
 
+class AmortizationReport : public Report, public Action {
+public:
+    AmortizationReport(MortgageData& ref) : Report(ref) {}
+    virtual void execute() override;
+    
+private:
+    map<string, float> dataHash;
+};
 
 class BorrowerReport : public Action {
 public:

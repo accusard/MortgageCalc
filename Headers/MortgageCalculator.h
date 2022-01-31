@@ -29,12 +29,20 @@ struct MortgageData {
     const float getTotalMonthlyDebts() const;
     const float getBorrowersPayRates() const;
     
+    // the home's purchase price
     float purchase;
+    
     float downpayment;
+    
     int termYears;
+    
     float interest;
+    
     float downPercentage;
+    
+    // the loan amount
     float amount;
+    
     vector<Borrower> Borrowers;
 };
 
@@ -45,10 +53,14 @@ struct MortgageCalculator {
     static constexpr float DTI_RATIO = 0.43f;
     
     static const float getMonthlyPrincipalAndInterest(const MortgageData& loan) {
-        float interestRate = toMonthlyInterestRate(loan.interest);
+        float interestRate = getMonthlyInterestRate(loan.interest);
         float powFormula = pow((1+interestRate), (loan.termYears*12));
         return (loan.amount * interestRate * powFormula) / (powFormula - 1);
         
+    }
+    
+    static const float getMonthlyInterestRate(const float i) {
+        return toMonthlyInterestRate(i);
     }
     
     static const float getPropertyTax(const MortgageData& loan) {
