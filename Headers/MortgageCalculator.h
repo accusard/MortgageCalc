@@ -15,12 +15,12 @@
 
 using namespace std;
 
-const float formatToInterest(const float i);
+const float ToPercent(const float decimal);
 
-const float toMonthlyInterestRate(const float interest);
+const float toMonthlyInterestRate(const float interestPerc);
 
 struct MortgageData {
-    MortgageData(const float purchse, const float down, const int years, const float interest);
+    MortgageData(const float purchse, const float down, const int years, const float interestPerc);
     
     void update();
     const float getWeeklyGross(const Borrower& b) const;
@@ -30,18 +30,18 @@ struct MortgageData {
     const float getBorrowersPayRates() const;
     
     // the home's purchase price
-    float purchase;
+    float purchasePrice;
     
     float downpayment;
     
     int termYears;
     
-    float interest;
+    float percentInterest;
     
-    float downPercentage;
+    float percentDown;
     
     // the loan amount
-    float amount;
+    float loanAmount;
     
     vector<Borrower> Borrowers;
 };
@@ -52,10 +52,10 @@ struct MortgageCalculator {
     static constexpr float PMI_TAX_RATE = 0.000625f;
     static constexpr float DTI_RATIO = 0.43f;
     
-    static const float getMonthlyPrincipalAndInterest(const MortgageData& loan) {
-        float interestRate = getMonthlyInterestRate(loan.interest);
-        float powFormula = pow((1+interestRate), (loan.termYears*12));
-        return (loan.amount * interestRate * powFormula) / (powFormula - 1);
+    static const float getMonthlyPrincipalAndInterest(const float loanAmount, const int loanTermYears, const float interestPercent) {
+        float interestRate = getMonthlyInterestRate(interestPercent);
+        float powFormula = pow((1+interestRate), (loanTermYears * 12));
+        return (loanAmount * interestRate * powFormula) / (powFormula - 1);
         
     }
     
@@ -63,23 +63,23 @@ struct MortgageCalculator {
         return toMonthlyInterestRate(i);
     }
     
-    static const float getPropertyTax(const MortgageData& loan) {
-        return loan.purchase * PROPERTY_TAX_RATE;
+    static const float getPropertyTax(const float purchasePrice) {
+        return purchasePrice * PROPERTY_TAX_RATE;
     }
     
-    static const float getHomeOwnersInsurancePremium(const MortgageData& loan) {
-        return loan.purchase * HOMEOWNER_INSURANCE_TAX_RATE;
+    static const float getHomeOwnersInsurancePremium(const float purchasePrice) {
+        return purchasePrice * HOMEOWNER_INSURANCE_TAX_RATE;
     }
     
-    static const float getPrivateMortgageInsurance(const MortgageData& loan) {
-        return loan.amount * PMI_TAX_RATE;
+    static const float getPrivateMortgageInsurance(const float loanAmt) {
+        return loanAmt * PMI_TAX_RATE;
     }
     
-    static const float getMonthlyPayments(const MortgageData& loan) {
-        float monthlyPrincipalAndInterest = getMonthlyPrincipalAndInterest(loan);
-        float propertyTax = getPropertyTax(loan);
-        float homeOwnersInsurance = getHomeOwnersInsurancePremium(loan);
-        float privateMortgageInsurance = getPrivateMortgageInsurance(loan);
+    static const float getMonthlyPayments(const float purchasePrice, const float loanAmount, const int loanTermYears, const float interestPercent) {
+        float monthlyPrincipalAndInterest = getMonthlyPrincipalAndInterest(loanAmount, loanTermYears, interestPercent);
+        float propertyTax = getPropertyTax(purchasePrice);
+        float homeOwnersInsurance = getHomeOwnersInsurancePremium(purchasePrice);
+        float privateMortgageInsurance = getPrivateMortgageInsurance(loanAmount);
         float monthlyPayments = monthlyPrincipalAndInterest + propertyTax + homeOwnersInsurance + privateMortgageInsurance;
         
         return  monthlyPayments;

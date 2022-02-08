@@ -23,27 +23,18 @@ struct Action {
     virtual void execute() {}
 };
 
-class Report {
+class MortgageReport : public MortgageData, public Action {
 public:
-    Report(MortgageData& dRef) : data(dRef) {}
-    
-protected:
-    MortgageData& data;
-};
-
-
-class MortgageReport : public Report, public Action {
-public:
-    MortgageReport(MortgageData& dRef) : Report(dRef) {}
+    MortgageReport(MortgageData& dRef) : MortgageData(dRef) {}
     virtual void execute() override;
     
 private:
     
 };
 
-class AmortizationReport : public Report, public Action {
+class AmortizationReport : public MortgageData, public Action {
 public:
-    AmortizationReport(MortgageData& ref) : Report(ref) {}
+    AmortizationReport(MortgageData& ref) : MortgageData(ref) {}
     virtual void execute() override;
     
 private:
@@ -60,9 +51,9 @@ private:
 };
 
 
-class DTIReport : public Report, public Action {
+class DTIReport : public MortgageData, public Action {
 public:
-    DTIReport(MortgageData& dref) : Report(dref) {}
+    DTIReport(MortgageData& dref) : MortgageData(dref) {}
     virtual void execute() override;
     
 private:
@@ -70,7 +61,7 @@ private:
 };
 
 
-class SequencePrompts : public Report, public Action {
+class SequencePrompts : public MortgageData, public Action {
     
 public:
     SequencePrompts(MortgageData& d);

@@ -8,7 +8,7 @@
 #include "Menu.h"
 #include "Action.hpp"
 
-SequencePrompts::SequencePrompts(MortgageData& d) : Report(d) {}
+SequencePrompts::SequencePrompts(MortgageData& d) : MortgageData(d) {}
 
 void SequencePrompts::addQuery(const string &prompt, float &data) {
     inquiriesFloat.push_back(QueryToType<float>(prompt, data));
@@ -32,7 +32,7 @@ void SequencePrompts::execute() {
    for(int i = 0; i < inquiriesBorrower.size(); i++)
         inquiriesBorrower[i].prompt();
    
-   data.update();
+   update();
 }
 
 Loop::Loop(Menu* menu, void(Menu::*loopPtr)(), const char exit) : loop(loopPtr), stop(exit) {
@@ -47,35 +47,35 @@ void Loop::execute() {
 
 void MortgageReport::execute() {
     
-    data.update();
+    update();
     
     cout << endl;
     cout << "Borrower(s): ";
-    for(auto b : data.Borrowers) {
+    for(auto b : Borrowers) {
         cout << b.getName().l << ", " << b.getName().f << " " << b.getName().m.front() << ".";
-        if(b !=  data.Borrowers.back())
+        if(b !=  Borrowers.back())
             cout << "; ";
     }
 
     cout << endl;
-    cout << "Loan Amount: " << data.amount << " : " << data.interest << "% : " << data.termYears << "y" << endl;
-    cout << "Monthly Principal & Interest: " << MortgageCalculator::getMonthlyPrincipalAndInterest(data) << endl;
-    cout << "Property Taxes: " << MortgageCalculator::getPropertyTax(data) << endl;
-    cout << "Homeowners Insurance: " << MortgageCalculator::getHomeOwnersInsurancePremium(data) << endl;
-    cout << "Private Mortgage Insurance: " << MortgageCalculator::getPrivateMortgageInsurance(data) << endl << endl;
-    cout << "Total Mortgage Payments: " << MortgageCalculator::getMonthlyPayments(data) << endl << endl;
+    cout << "Loan Amount: " << loanAmount << " : " << percentInterest << "% : " << termYears << "y" << endl;
+    cout << "Monthly Principal & Interest: " << MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest) << endl;
+    cout << "Property Taxes: " << MortgageCalculator::getPropertyTax(purchasePrice) << endl;
+    cout << "Homeowners Insurance: " << MortgageCalculator::getHomeOwnersInsurancePremium(purchasePrice) << endl;
+    cout << "Private Mortgage Insurance: " << MortgageCalculator::getPrivateMortgageInsurance(loanAmount) << endl << endl;
+    cout << "Total Mortgage Payments: " << MortgageCalculator::getMonthlyPayments(purchasePrice, loanAmount, termYears, percentInterest) << endl << endl;
 }
 
 void AmortizationReport::execute() {
     
-    int totalPayments = data.termYears * 12;
-    float remainingBalance = data.amount;
-    float monthlypay = MortgageCalculator::getMonthlyPrincipalAndInterest(data);
+    int totalPayments = termYears * 12;
+    float remainingBalance = loanAmount;
+    float monthlypay = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest);
     
     cout << "Payment : Principal : Interest : Balance\n";
     for(int i = 1; i <= totalPayments; i++) {
-        float interestPayment = remainingBalance * toMonthlyInterestRate(data.interest);
-        float principalPaid = MortgageCalculator::getMonthlyPrincipalAndInterest(data) - interestPayment;
+        float interestPayment = remainingBalance * toMonthlyInterestRate(percentInterest);
+        float principalPaid = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest) - interestPayment;
         remainingBalance = remainingBalance - principalPaid;
         
         if(i == totalPayments && remainingBalance > 0) {
@@ -106,29 +106,29 @@ void BorrowerReport::execute() {
 
 void DTIReport::execute() {
     
-    data.update();
+    update();
     
-    float totalMonthlyGross = (data.getTotalYearlyGross() /12);
-    float monthlyMortgagePayment = MortgageCalculator::getMonthlyPayments(data);
-    float dti = (data.getTotalMonthlyDebts() + monthlyMortgagePayment) / totalMonthlyGross;
-    float monthlyIncomeNeeded = ((data.getTotalMonthlyDebts() + monthlyMortgagePayment) / MortgageCalculator::DTI_RATIO);
-    float otDays = ((data.getBorrowersPayRates() * 1.5) * 8) + ((data.getBorrowersPayRates() * 2.f) * 2); // based on 10 hr shifts
+    float totalMonthlyGross = (getTotalYearlyGross() /12);
+    float monthlyMortgagePayment = MortgageCalculator::getMonthlyPayments(purchasePrice, loanAmount, termYears, percentInterest);
+    float dti = (getTotalMonthlyDebts() + monthlyMortgagePayment) / totalMonthlyGross;
+    float monthlyIncomeNeeded = ((getTotalMonthlyDebts() + monthlyMortgagePayment) / MortgageCalculator::DTI_RATIO);
+    float otDays = ((getBorrowersPayRates() * 1.5) * 8) + ((getBorrowersPayRates() * 2.f) * 2); // based on 10 hr shifts
     float otDaysToCoverMortgage = ((monthlyIncomeNeeded-totalMonthlyGross ) * 12) / otDays;
-    float cashAfterDebts = totalMonthlyGross - (data.getTotalMonthlyDebts() + monthlyMortgagePayment);
+    float cashAfterDebts = totalMonthlyGross - (getTotalMonthlyDebts() + monthlyMortgagePayment);
     
     
-    cout << "Debt-To-Income ratio: " << formatToInterest(dti) << "%" << endl;
+    cout << "Debt-To-Income ratio: " << ToPercent(dti) << "%" << endl;
     if(dti >= MortgageCalculator::DTI_RATIO) {
         float payRateNeeded = ((monthlyIncomeNeeded * 12) / 52) / 40;
-        cout << "Payrate $" << data.getBorrowersPayRates() << "/hr " << endl;
-        cout << "Additional income to meet " << formatToInterest(MortgageCalculator::DTI_RATIO) << "% DTI: $" << monthlyIncomeNeeded-totalMonthlyGross << "/month" << endl;
+        cout << "Payrate $" << getBorrowersPayRates() << "/hr " << endl;
+        cout << "Additional income to meet " << ToPercent(MortgageCalculator::DTI_RATIO) << "% DTI: $" << monthlyIncomeNeeded-totalMonthlyGross << "/month" << endl;
         cout << "Overtime days per year required to cover mortgage: " << otDaysToCoverMortgage << endl;
         cout << "Gross remaining after debts $" << cashAfterDebts << "/month" << endl;
         cout << ".. or find a new job that pays $" << payRateNeeded << "/hr" << endl;
     } else {
         cout << "Congratulations! " << endl;
-        cout << "Your combined payrates of $" << data.getBorrowersPayRates() << "/hr ";
-        cout << "totaling $" << totalMonthlyGross << "/month meets the " << formatToInterest(MortgageCalculator::DTI_RATIO) << "% dti ratio!" << endl;
+        cout << "Your combined payrates of $" << getBorrowersPayRates() << "/hr ";
+        cout << "totaling $" << totalMonthlyGross << "/month meets the " << ToPercent(MortgageCalculator::DTI_RATIO) << "% dti ratio!" << endl;
         cout << "Total monthly gross remaining after debts $" << cashAfterDebts << endl;
         
         cout << ".. in which $" << totalMonthlyGross * (MortgageCalculator::DTI_RATIO - dti) << " can comfortably go towards other debts!" << endl;

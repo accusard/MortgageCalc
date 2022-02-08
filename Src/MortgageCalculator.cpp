@@ -8,10 +8,9 @@
 #include "MortgageCalculator.h"
 #include <iostream>
 
-const float formatToInterest(const float i)
+const float ToPercent(const float decimal)
 {
-   float interest = i / 0.01f;
-   return interest;
+   return decimal / 0.01f;
 }
 
 const float toMonthlyInterestRate(const float annualInterest) {
@@ -19,14 +18,14 @@ const float toMonthlyInterestRate(const float annualInterest) {
     return interestRate;
 }
 
-MortgageData::MortgageData(const float p, const float d, const int y, const float i) : purchase(p), downpayment(d), termYears(y), interest(i) {
+MortgageData::MortgageData(const float p, const float d, const int y, const float i) : purchasePrice(p), downpayment(d), termYears(y), percentInterest(i) {
     
     update();
 }
 
 void MortgageData::update() {
-    downPercentage = downpayment / purchase;
-    amount = purchase - downpayment;
+    percentDown = downpayment / purchasePrice;
+    loanAmount = purchasePrice - downpayment;
 }
 
 const float MortgageData::getWeeklyGross(const Borrower& b) const{
