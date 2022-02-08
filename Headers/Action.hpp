@@ -43,11 +43,11 @@ private:
 
 class BorrowerReport : public Action {
 public:
-    BorrowerReport(vector<Borrower>& b) : data(b) {}
+    BorrowerReport(vector<Borrower>& b) : borrowers(b) {}
     virtual void execute() override;
     
 private:
-    vector<Borrower>& data;
+    vector<Borrower>& borrowers;
 };
 
 

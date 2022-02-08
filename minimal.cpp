@@ -133,7 +133,7 @@ bool MyApp::OnInit()
     // application would exit immediately.
     
     // test AmortizationReport
-    MortgageData newData(400000, 40000, 30, 5.f);
+    MortgageData newData(177000., 0., 30, 4.f);
     Menu main("Main Menu");
     shared_ptr<Action> action = make_shared<AmortizationReport>(newData);
     

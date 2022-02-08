@@ -20,15 +20,21 @@ const float toMonthlyInterestRate(const float annualInterest) {
 
 MortgageData::MortgageData(const float p, const float d, const int y, const float i) : purchasePrice(p), downpayment(d), termYears(y), percentInterest(i) {
     
-    update();
+    update(p, d);
 }
 
-void MortgageData::update() {
+void MortgageData::recalculateMortgage() {
     percentDown = downpayment / purchasePrice;
     loanAmount = purchasePrice - downpayment;
 }
 
-const float MortgageData::getWeeklyGross(const Borrower& b) const{
+void MortgageData::update(float price, float down) {
+    purchasePrice = price;
+    downpayment = down;
+    recalculateMortgage();
+}
+
+const float MortgageData::getWeeklyGross(const Borrower& b) const {
     return b.getWeeklyEarnings();
 }
 

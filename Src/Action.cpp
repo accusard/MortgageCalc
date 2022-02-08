@@ -32,7 +32,7 @@ void SequencePrompts::execute() {
    for(int i = 0; i < inquiriesBorrower.size(); i++)
         inquiriesBorrower[i].prompt();
    
-   update();
+   recalculateMortgage();
 }
 
 Loop::Loop(Menu* menu, void(Menu::*loopPtr)(), const char exit) : loop(loopPtr), stop(exit) {
@@ -47,7 +47,7 @@ void Loop::execute() {
 
 void MortgageReport::execute() {
     
-    update();
+    recalculateMortgage();
     
     cout << endl;
     cout << "Borrower(s): ";
@@ -78,7 +78,7 @@ void AmortizationReport::execute() {
         float principalPaid = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest) - interestPayment;
         remainingBalance = remainingBalance - principalPaid;
         
-        if(i == totalPayments && remainingBalance > 0) {
+        if(i == totalPayments && remainingBalance < 0) {
             principalPaid += remainingBalance;
             monthlypay = principalPaid + interestPayment;
             remainingBalance = 0.f;
@@ -93,8 +93,8 @@ void AmortizationReport::execute() {
 }
 
 void BorrowerReport::execute() {
-    if(data.size() != 0) {
-        for(auto b : data) {
+    if(borrowers.size() != 0) {
+        for(auto b : borrowers) {
             cout << "--- " << b.getName().f << " ---" << endl;
             cout << "Gross Weekly: $" << b.getWeeklyEarnings() << " - ";
             cout << "Gross Monthly: $" << b.getMonthlyEarnings() << " - ";
@@ -106,7 +106,7 @@ void BorrowerReport::execute() {
 
 void DTIReport::execute() {
     
-    update();
+    recalculateMortgage();
     
     float totalMonthlyGross = (getTotalYearlyGross() /12);
     float monthlyMortgagePayment = MortgageCalculator::getMonthlyPayments(purchasePrice, loanAmount, termYears, percentInterest);

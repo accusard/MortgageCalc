@@ -22,27 +22,26 @@ const float toMonthlyInterestRate(const float interestPerc);
 struct MortgageData {
     MortgageData(const float purchse, const float down, const int years, const float interestPerc);
     
-    void update();
+    void recalculateMortgage();
+    void update(float homePrice, float downPayment);
+    
     const float getWeeklyGross(const Borrower& b) const;
     const float getYearlyGross(const Borrower& b) const;
     const float getTotalYearlyGross() const;
     const float getTotalMonthlyDebts() const;
     const float getBorrowersPayRates() const;
     
+protected:
     // the home's purchase price
     float purchasePrice;
-    
-    float downpayment;
-    
-    int termYears;
-    
-    float percentInterest;
-    
-    float percentDown;
-    
     // the loan amount
     float loanAmount;
     
+public:
+    float downpayment;
+    int termYears;
+    float percentInterest;
+    float percentDown;
     vector<Borrower> Borrowers;
 };
 
