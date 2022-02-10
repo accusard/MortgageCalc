@@ -132,10 +132,18 @@ bool MyApp::OnInit()
     // loop and the application will run. If we returned false here, the
     // application would exit immediately.
     
-    // test AmortizationReport
-    MortgageData newData(177000., 0., 30, 4.f);
+    // test save data
+    const int purchasePrice = 177000;
+    const float downpayment = 0.f;
+    const int terms = 30;
+    const float percentInt = 4.f;
+    
+    
+    MortgageData mData(purchasePrice, downpayment, terms, percentInt);
+    mData.save();
+    
     Menu main("Main Menu");
-    shared_ptr<Action> action = make_shared<AmortizationReport>(newData);
+    shared_ptr<Action> action = make_shared<AmortizationReport>(mData);
     
     main.bindAction(action);
     main.run();
