@@ -70,24 +70,24 @@ void AmortizationReport::execute() {
     
     int totalPayments = termYears * 12;
     float remainingBalance = loanAmount;
-    float monthlypay = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest);
+    float monthlyPayment = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest);
     
     cout << "Payment : Principal : Interest : Balance\n";
     for(int i = 1; i <= totalPayments; i++) {
-        float interestPayment = remainingBalance * toMonthlyInterestRate(percentInterest);
-        float principalPaid = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest) - interestPayment;
-        remainingBalance = remainingBalance - principalPaid;
+        float interestPaid = remainingBalance * toMonthlyInterestRate(percentInterest);
+        float principalPaid = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest) - interestPaid;
+        remainingBalance -=  principalPaid;
         
         if(i == totalPayments && remainingBalance < 0) {
             principalPaid += remainingBalance;
-            monthlypay = principalPaid + interestPayment;
-            remainingBalance = 0.f;
+            monthlyPayment = principalPaid + interestPaid;
+//            remainingBalance = 0.f;
         }
         
         cout << i << " : ";
-        cout << monthlypay << " : ";
+        cout << monthlyPayment << " : ";
         cout << principalPaid << " : ";
-        cout << interestPayment << " : ";
+        cout << interestPaid << " : ";
         cout << remainingBalance << endl;
     }
 }
