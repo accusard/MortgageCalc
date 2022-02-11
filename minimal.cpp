@@ -18,8 +18,12 @@
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+
+// to test read/write data
+#include <fstream>
 #include "Menu.h"
 #include "Action.hpp"
+//
 
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWidgets headers)
@@ -133,20 +137,28 @@ bool MyApp::OnInit()
     // application would exit immediately.
     
     // test save data
-    const int purchasePrice = 177000;
-    const float downpayment = 0.f;
-    const int terms = 30;
-    const float percentInt = 4.f;
+    MortgageData mData;
     
+    ifstream ifile(DATA_FILE_NAME, ios::in|ios::binary);
     
-    MortgageData mData(purchasePrice, downpayment, terms, percentInt);
-    mData.save();
-    
-    Menu main("Main Menu");
-    shared_ptr<Action> action = make_shared<AmortizationReport>(mData);
-    
-    main.bindAction(action);
-    main.run();
+    if(ifile.is_open()) {
+        mData.load(DATA_FILE_NAME.c_str());
+        ifile.close();
+    }
+    else {
+        const int purchasePrice = 177000;
+        const float downpayment = 0.f;
+        const int terms = 30;
+        const float percentInt = 4.f;
+        mData = MortgageData(purchasePrice, downpayment, terms, percentInt);
+        mData.save(DATA_FILE_NAME.c_str());
+    }
+//    mData << data;
+//    Menu main("Main Menu");
+//    shared_ptr<Action> action = make_shared<AmortizationReport>(mData);
+//
+//    main.bindAction(action);
+//    main.run();
     
     return true;
 }

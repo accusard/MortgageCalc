@@ -6,7 +6,9 @@
 //
 
 #include "MortgageCalculator.h"
+#include <stdio.h>
 #include <iostream>
+#include <fstream>
 
 const float ToPercent(const float decimal)
 {
@@ -72,4 +74,59 @@ const float MortgageData::getBorrowersPayRates() const{
     return total;
 }
 
+void MortgageData::save(const char* filename) {
+    cout << "saving-" << filename << endl;
+    ofstream ofile(filename, ios::out|ios::binary|ios::trunc);
+    
+    if(ofile.is_open()) {
+        for(auto map : makeHashTable()) {
+            ofile << map.first <<":" << map.second << endl;
+        }
+        ofile.close();
+    }
+}
 
+void MortgageData::load(const char* filename) {
+    cout << "loading-" << filename << endl;
+    ifstream ifile(filename, ios::in|ios::binary);
+    string line;
+    if(ifile.is_open()) {
+        // read each line 1 by 1 and add to variable
+        while(getline(ifile,line))
+        {
+            unsigned long stopat = line.find(":");
+            const string varName = line.substr(0, stopat);
+            
+            // ewww
+            if(varName == GET_VAR_NAME(percentDown)) {
+                percentDown = stof(line.substr(stopat+1));
+            } else if(varName == GET_VAR_NAME(percentInterest)) {
+                percentInterest = stof(line.substr(stopat+1));
+            } else if(varName == GET_VAR_NAME(termYears)) {
+                termYears = (int)stof(line.substr(stopat+1));
+            } else if(varName == GET_VAR_NAME(downpayments)) {
+                downpayment = stof(line.substr(stopat+1));
+            } else if(varName == GET_VAR_NAME(loanAmount)) {
+                loanAmount = stof(line.substr(stopat+1));
+            } else if(varName == GET_VAR_NAME(purchasePrice)) {
+                purchasePrice = stof(line.substr(stopat+1));
+            }
+        }
+        
+    }
+    ifile.close();
+}
+
+void MortgageData::makeHash(const string& str, const float val) {
+    dataHash.insert(make_pair(str, val));
+}
+
+const unordered_map<string, float>& MortgageData::makeHashTable() {
+    makeHash(GET_VAR_NAME(purchasePrice), purchasePrice);
+    makeHash(GET_VAR_NAME(loanAmount), loanAmount);
+    makeHash(GET_VAR_NAME(downpayment), downpayment);
+    makeHash(GET_VAR_NAME(termYears), termYears);
+    makeHash(GET_VAR_NAME(percentInterest), percentInterest);
+    makeHash(GET_VAR_NAME(percentDown),percentDown);
+    return dataHash;
+}

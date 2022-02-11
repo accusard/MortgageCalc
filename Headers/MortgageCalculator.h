@@ -7,19 +7,26 @@
 
 #ifndef MortgageCalculator_h
 #define MortgageCalculator_h
+
+#define GET_VAR_NAME(var) (#var)
+
 #include <string>
 #include <vector>
 #include <cmath>
+#include <unordered_map>
 #include "QueryData.hpp"
 #include "Borrower.h"
 
 using namespace std;
 
+const string DATA_FILE_NAME = "data.bin";
 const float ToPercent(const float decimal);
-
 const float toMonthlyInterestRate(const float interestPerc);
 
 struct MortgageData {
+    MortgageData() : purchasePrice(0.f), loanAmount(0.f), downpayment(0.f),
+    termYears(0), percentInterest(0.f), percentDown(0.f) {}
+    
     MortgageData(const float purchse, const float down, const int years, const float interestPerc);
     
     void recalculateMortgage();
@@ -30,6 +37,11 @@ struct MortgageData {
     const float getTotalYearlyGross() const;
     const float getTotalMonthlyDebts() const;
     const float getBorrowersPayRates() const;
+    
+    // saving and loading file
+    unordered_map<string, float> dataHash;
+    void save(const char* filename);
+    void load(const char* filename);
     
 protected:
     // the home's purchase price
@@ -43,6 +55,10 @@ public:
     float percentInterest;
     float percentDown;
     vector<Borrower> Borrowers;
+    
+private:
+    void makeHash(const string& str, const float val);
+    const unordered_map<string, float>& makeHashTable();
 };
 
 struct MortgageCalculator {
