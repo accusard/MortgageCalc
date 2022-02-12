@@ -75,7 +75,7 @@ const float MortgageData::getBorrowersPayRates() const{
 }
 
 void MortgageData::save(const char* filename) {
-    cout << "saving-" << filename << endl;
+    cout << "saving " << filename << endl;
     ofstream ofile(filename, ios::out|ios::binary|ios::trunc);
     
     if(ofile.is_open()) {
@@ -87,7 +87,7 @@ void MortgageData::save(const char* filename) {
 }
 
 void MortgageData::load(const char* filename) {
-    cout << "loading-" << filename << endl;
+    cout << "loading " << filename << endl;
     ifstream ifile(filename, ios::in|ios::binary);
     string line;
     if(ifile.is_open()) {
@@ -97,22 +97,19 @@ void MortgageData::load(const char* filename) {
             unsigned long stopat = line.find(":");
             const string varName = line.substr(0, stopat);
             
+            float *myFloatPtr = nullptr;
+            
             // ewww
-            if(varName == GET_VAR_NAME(percentDown)) {
-                percentDown = stof(line.substr(stopat+1));
-            } else if(varName == GET_VAR_NAME(percentInterest)) {
-                percentInterest = stof(line.substr(stopat+1));
-            } else if(varName == GET_VAR_NAME(termYears)) {
-                termYears = (int)stof(line.substr(stopat+1));
-            } else if(varName == GET_VAR_NAME(downpayments)) {
-                downpayment = stof(line.substr(stopat+1));
-            } else if(varName == GET_VAR_NAME(loanAmount)) {
-                loanAmount = stof(line.substr(stopat+1));
-            } else if(varName == GET_VAR_NAME(purchasePrice)) {
-                purchasePrice = stof(line.substr(stopat+1));
-            }
+            if(varName == GET_VAR_NAME(percentDown)) myFloatPtr = &percentDown;
+            else if(varName == GET_VAR_NAME(percentInterest)) myFloatPtr = &percentInterest;
+            else if(varName == GET_VAR_NAME(termYears)) termYears = stoi(line.substr(stopat+1));
+            else if(varName == GET_VAR_NAME(downpayments)) myFloatPtr = &downpayment;
+            else if(varName == GET_VAR_NAME(loanAmount)) myFloatPtr = &loanAmount;
+            else if(varName == GET_VAR_NAME(purchasePrice)) myFloatPtr = &purchasePrice;
+            
+            if(myFloatPtr != nullptr)
+                *myFloatPtr = stof(line.substr(stopat+1));
         }
-        
     }
     ifile.close();
 }
