@@ -89,29 +89,16 @@ void MortgageData::save(const char* filename) {
 void MortgageData::load(const char* filename) {
     cout << "loading " << filename << endl;
     ifstream ifile(filename, ios::in|ios::binary);
-    string line;
+    
     if(ifile.is_open()) {
         // read each line 1 by 1 and add to variable
+        string line;
         while(getline(ifile,line))
         {
-            unsigned long stopat = line.find(":");
-            const string varName = line.substr(0, stopat);
-            
-            float *myFloatPtr = nullptr;
-            
-            // ewww
-            if(varName == GET_VAR_NAME(percentDown)) myFloatPtr = &percentDown;
-            else if(varName == GET_VAR_NAME(percentInterest)) myFloatPtr = &percentInterest;
-            else if(varName == GET_VAR_NAME(termYears)) termYears = stoi(line.substr(stopat+1));
-            else if(varName == GET_VAR_NAME(downpayments)) myFloatPtr = &downpayment;
-            else if(varName == GET_VAR_NAME(loanAmount)) myFloatPtr = &loanAmount;
-            else if(varName == GET_VAR_NAME(purchasePrice)) myFloatPtr = &purchasePrice;
-            
-            if(myFloatPtr != nullptr)
-                *myFloatPtr = stof(line.substr(stopat+1));
+            readFrom(line);
         }
+        ifile.close();
     }
-    ifile.close();
 }
 
 void MortgageData::makeHash(const string& str, const float val) {
@@ -125,5 +112,23 @@ const unordered_map<string, float>& MortgageData::makeHashTable() {
     makeHash(GET_VAR_NAME(termYears), termYears);
     makeHash(GET_VAR_NAME(percentInterest), percentInterest);
     makeHash(GET_VAR_NAME(percentDown),percentDown);
+    
     return dataHash;
+}
+
+void MortgageData::readFrom(const string& inLine) {
+    
+    unsigned long stopat = inLine.find(":");
+    const string varname = inLine.substr(0, stopat);
+    float *floatptr = nullptr;
+
+    if(varname == GET_VAR_NAME(termYears)) { termYears = stoi(inLine.substr(stopat+1)); return; }
+    else if(varname == GET_VAR_NAME(percentDown)) floatptr = &percentDown;
+    else if(varname == GET_VAR_NAME(percentInterest)) floatptr = &percentInterest;
+    else if(varname == GET_VAR_NAME(downpayments)) floatptr = &downpayment;
+    else if(varname == GET_VAR_NAME(loanAmount)) floatptr = &loanAmount;
+    else if(varname == GET_VAR_NAME(purchasePrice)) floatptr = &purchasePrice;
+
+    if(floatptr != nullptr)
+        *floatptr = stof(inLine.substr(stopat+1));
 }

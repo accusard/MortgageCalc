@@ -59,6 +59,7 @@ public:
 private:
     void makeHash(const string& str, const float val);
     const unordered_map<string, float>& makeHashTable();
+    void readFrom(const string& line);
 };
 
 struct MortgageCalculator {
