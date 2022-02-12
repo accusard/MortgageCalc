@@ -38,6 +38,11 @@ struct MortgageData {
     const float getTotalMonthlyDebts() const;
     const float getBorrowersPayRates() const;
     
+    void setPurchasePrice(const float price);
+    void setDownpayment(const float down);
+    void setTerms(const int years);
+    void setInterest(const float percent);
+    
     // saving and loading file
     unordered_map<string, float> dataHash;
     void save(const char* filename);

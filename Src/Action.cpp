@@ -76,6 +76,7 @@ void AmortizationReport::execute() {
     monthlyPayment -= remainingPayFaction;
     
     cout << "Payment : Principal : Interest : Balance\n";
+    
     for(int i = 1; i <= months; i++) {
         float towardInterest = balance * toMonthlyInterestRate(percentInterest);
         float towardPrincipal = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest) - towardInterest - remainingPayFaction;

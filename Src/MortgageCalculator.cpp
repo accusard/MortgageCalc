@@ -101,6 +101,22 @@ void MortgageData::load(const char* filename) {
     }
 }
 
+void MortgageData::setPurchasePrice(const float price) {
+    update(price, downpayment);
+}
+
+void MortgageData::setDownpayment(const float down) {
+    update(purchasePrice, down);
+}
+
+void MortgageData::setTerms(const int years) {
+    termYears = years;
+}
+
+void MortgageData::setInterest(const float percent) {
+    percentInterest = percent;
+}
+
 void MortgageData::makeHash(const string& str, const float val) {
     dataHash.insert(make_pair(str, val));
 }

@@ -37,8 +37,12 @@ public:
     AmortizationReport(MortgageData& ref) : MortgageData(ref) {}
     virtual void execute() override;
     
+    // separate calculations from print output
+    // void amortize();
+    // void printout();
 private:
-    map<string, float> dataHash;
+    // change dataHash to use a struct for second pair
+    map<int, float> dataHash;
 };
 
 class BorrowerReport : public Action {
