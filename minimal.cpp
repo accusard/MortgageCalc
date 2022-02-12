@@ -136,7 +136,7 @@ bool MyApp::OnInit()
     // loop and the application will run. If we returned false here, the
     // application would exit immediately.
     
-    // test save data
+    // fix amortization calculations
     MortgageData mData;
     
     ifstream ifile(DATA_FILE_NAME, ios::in|ios::binary);
@@ -146,19 +146,19 @@ bool MyApp::OnInit()
         ifile.close();
     }
     else {
-        const int purchasePrice = 177000;
-        const float downpayment = 0.f;
+        const int purchasePrice = 400000;
+        const float downpayment = 10000.f;
         const int terms = 30;
         const float percentInt = 4.f;
         mData = MortgageData(purchasePrice, downpayment, terms, percentInt);
         mData.save(DATA_FILE_NAME.c_str());
     }
-//    mData << data;
-//    Menu main("Main Menu");
-//    shared_ptr<Action> action = make_shared<AmortizationReport>(mData);
-//
-//    main.bindAction(action);
-//    main.run();
+
+    Menu main("Main Menu");
+    shared_ptr<Action> action = make_shared<AmortizationReport>(mData);
+
+    main.bindAction(action);
+    main.run();
     
     return true;
 }

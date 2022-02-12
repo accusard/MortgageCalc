@@ -75,8 +75,8 @@ const float MortgageData::getBorrowersPayRates() const{
 }
 
 void MortgageData::save(const char* filename) {
-    cout << "saving " << filename << endl;
-    ofstream ofile(filename, ios::out|ios::binary|ios::trunc);
+    cout << "saving " << filename << endl << endl;
+    ofstream ofile(filename, ios::out|ios::trunc|ios::binary);
     
     if(ofile.is_open()) {
         for(auto map : makeHashTable()) {
@@ -87,7 +87,7 @@ void MortgageData::save(const char* filename) {
 }
 
 void MortgageData::load(const char* filename) {
-    cout << "loading " << filename << endl;
+    cout << "loading " << filename << endl << endl;
     ifstream ifile(filename, ios::in|ios::binary);
     
     if(ifile.is_open()) {

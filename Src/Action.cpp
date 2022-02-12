@@ -68,27 +68,30 @@ void MortgageReport::execute() {
 
 void AmortizationReport::execute() {
     
-    int totalPayments = termYears * 12;
-    float remainingBalance = loanAmount;
+    const int months = termYears * 12;
+    float balance = loanAmount;
     float monthlyPayment = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest);
+    float integral;
+    const float remainingPayFaction = modf(monthlyPayment, &integral);
+    monthlyPayment -= remainingPayFaction;
     
     cout << "Payment : Principal : Interest : Balance\n";
-    for(int i = 1; i <= totalPayments; i++) {
-        float interestPaid = remainingBalance * toMonthlyInterestRate(percentInterest);
-        float principalPaid = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest) - interestPaid;
-        remainingBalance -=  principalPaid;
+    for(int i = 1; i <= months; i++) {
+        float towardInterest = balance * toMonthlyInterestRate(percentInterest);
+        float towardPrincipal = MortgageCalculator::getMonthlyPrincipalAndInterest(loanAmount, termYears, percentInterest) - towardInterest - remainingPayFaction;
+        balance -=  towardPrincipal;
         
-        if(i == totalPayments && remainingBalance < 0) {
-            principalPaid += remainingBalance;
-            monthlyPayment = principalPaid + interestPaid;
-//            remainingBalance = 0.f;
+        if(i == months) {
+            towardPrincipal += balance;
+            monthlyPayment = towardPrincipal + towardInterest;
+            balance = 0.f;
         }
         
         cout << i << " : ";
         cout << monthlyPayment << " : ";
-        cout << principalPaid << " : ";
-        cout << interestPaid << " : ";
-        cout << remainingBalance << endl;
+        cout << towardPrincipal << " : ";
+        cout << towardInterest << " : ";
+        cout << balance << endl;
     }
 }
 
