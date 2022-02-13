@@ -9,7 +9,7 @@
 #define DataFile_hpp
 
 #define GET_VAR_NAME(var) (#var)
-#define MAKE_HASH(name) make_pair(GET_VAR_NAME(name), name)
+#define MAKE_HASH(name) dataHash.insert_or_assign(GET_VAR_NAME(name),name)
 
 #include <iostream>
 #include <unordered_map>
@@ -25,7 +25,7 @@ private:
 public:
     // saving and loading file
     std::unordered_map<std::string, float> dataHash;
-    void save(const char* filename, MortgageData* data);
+    void save(const char* filename, MortgageData& data);
     void load(const char* filename, MortgageData& data);
     
     

@@ -99,13 +99,13 @@ void MortgageData::setInterest(const float percent) {
     percentInterest = percent;
 }
 
-unordered_map<string, float>& MortgageData::makeHashTable() {
-    File.dataHash.insert(MAKE_HASH(purchasePrice));
-    File.dataHash.insert(MAKE_HASH(loanAmount));
-    File.dataHash.insert(MAKE_HASH(downpayment));
-    File.dataHash.insert(MAKE_HASH(termYears));
-    File.dataHash.insert(MAKE_HASH(percentInterest));
-    File.dataHash.insert(MAKE_HASH(percentDown));
+const unordered_map<string, float>& MortgageData::makeHashTable() {
+    File.MAKE_HASH(purchasePrice);
+    File.MAKE_HASH(loanAmount);
+    File.MAKE_HASH(downpayment);
+    File.MAKE_HASH(termYears);
+    File.MAKE_HASH(percentInterest);
+    File.MAKE_HASH(percentDown);
     
     return File.dataHash;
 }

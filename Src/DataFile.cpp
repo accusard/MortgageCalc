@@ -11,12 +11,13 @@
 #include "IDataFileInterface.h"
 
 
-void DataFile::save(const char* filename, MortgageData* data) {
+void DataFile::save(const char* filename, MortgageData& data) {
+    data.recalculateMortgage();
     std::cout << "saving to " << filename << std::endl <<std:: endl;
     std::ofstream ofile(filename, std::ios::out|std::ios::trunc);
     
     if(ofile.is_open()) {
-        for(auto map : data->makeHashTable()) {
+        for(auto map : data.makeHashTable()) {
             ofile << map.first <<":" << map.second << std::endl;
             cout << map.first << " : " << map.second << std::endl;
         }
@@ -25,7 +26,7 @@ void DataFile::save(const char* filename, MortgageData* data) {
 }
 
 void DataFile::load(const char* filename, MortgageData& data) {
-    std::cout << "loading to " << filename << std::endl << std::endl;
+    std::cout << "loading from " << filename << std::endl << std::endl;
     std::ifstream ifile(filename, std::ios::in);
     
     if(ifile.is_open()) {
@@ -37,6 +38,7 @@ void DataFile::load(const char* filename, MortgageData& data) {
         }
         ifile.close();
     }
+    data.recalculateMortgage();
     cout << endl;
 }
 

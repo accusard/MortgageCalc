@@ -94,6 +94,7 @@ void AmortizationReport::execute() {
         cout << towardInterest << " : ";
         cout << balance << endl;
     }
+    cout << endl;
 }
 
 void BorrowerReport::execute() {

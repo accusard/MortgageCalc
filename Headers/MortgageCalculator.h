@@ -55,7 +55,7 @@ public:
     vector<Borrower> Borrowers;
     
     DataFile File;
-    virtual std::unordered_map<std::string, float>& makeHashTable() override;
+    virtual const std::unordered_map<std::string, float>& makeHashTable() override;
     
 };
 
