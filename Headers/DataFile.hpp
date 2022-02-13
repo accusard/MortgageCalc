@@ -9,11 +9,10 @@
 #define DataFile_hpp
 
 #define GET_VAR_NAME(var) (#var)
-#define MAKE_HASH(name) insert(GET_VAR_NAME(name), name);
+#define MAKE_HASH(name) make_pair(GET_VAR_NAME(name), name)
 
 #include <iostream>
 #include <unordered_map>
-#include "IDataFileInterface.h"
 
 struct MortgageData;
 
@@ -21,14 +20,13 @@ const std::string DATA_FILE_NAME = "debugsave.txt";
 
 class DataFile {
 private:
-//    void insert(const std::string& str, const float val);
-    void readFrom(const std::string& line);
+    void readFrom(const std::string& inLine, MortgageData& data);
     
 public:
     // saving and loading file
     std::unordered_map<std::string, float> dataHash;
-    void save(const char* filename, std::unordered_map<std::string, float>&(IDataFileInterface::*hashMapPtr)(DataFile&), DataFile& file);
-    void load(const char* filename);
+    void save(const char* filename, MortgageData* data);
+    void load(const char* filename, MortgageData& data);
     
     
     

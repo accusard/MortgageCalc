@@ -13,7 +13,8 @@
 
 class IDataFileInterface {
 public:
-    virtual std::unordered_map<std::string, float>& makeHashTable(class DataFile& file) = 0;
+    
+    virtual std::unordered_map<std::string, float>& makeHashTable() = 0;
 };
 
 #endif /* IDataFileInterface_h */

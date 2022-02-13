@@ -24,13 +24,13 @@ const float toMonthlyInterestRate(const float annualInterest) {
 MortgageData::MortgageData() : purchasePrice(400000.f), loanAmount(0.f), downpayment(40000.f),
 termYears(30.f), percentInterest(4.f), percentDown(0.f) {
     recalculateMortgage();
-    makeHashTable(File);
+    makeHashTable();
 }
 
 MortgageData::MortgageData(const float p, const float d, const int y, const float i) : termYears(y), percentInterest(i) {
     
     update(p, d);
-    makeHashTable(File);
+    makeHashTable();
 
 }
 
@@ -99,15 +99,13 @@ void MortgageData::setInterest(const float percent) {
     percentInterest = percent;
 }
 
-unordered_map<string, float>& MortgageData::makeHashTable(DataFile& file) {
+unordered_map<string, float>& MortgageData::makeHashTable() {
+    File.dataHash.insert(MAKE_HASH(purchasePrice));
+    File.dataHash.insert(MAKE_HASH(loanAmount));
+    File.dataHash.insert(MAKE_HASH(downpayment));
+    File.dataHash.insert(MAKE_HASH(termYears));
+    File.dataHash.insert(MAKE_HASH(percentInterest));
+    File.dataHash.insert(MAKE_HASH(percentDown));
     
-    file.dataHash.insert(make_pair(GET_VAR_NAME(purchasePrice), purchasePrice));
-    
-//    MAKE_HASH(loanAmount);
-//    MAKE_HASH(downpayment);
-//    MAKE_HASH(termYears);
-//    MAKE_HASH(percentInterest);
-//    MAKE_HASH(percentDown);
-    
-    return file.dataHash;
+    return File.dataHash;
 }

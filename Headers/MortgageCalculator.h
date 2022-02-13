@@ -25,6 +25,7 @@ const float toMonthlyInterestRate(const float interestPerc);
 struct MortgageData : public IDataFileInterface {
     
     MortgageData();
+    virtual ~MortgageData() {}
     MortgageData(const float purchse, const float down, const int years, const float interestPerc);
     
     void recalculateMortgage();
@@ -41,7 +42,6 @@ struct MortgageData : public IDataFileInterface {
     void setTerms(const int years);
     void setInterest(const float percent);
     
-protected:
     // the home's purchase price
     float purchasePrice;
     // the loan amount
@@ -55,8 +55,7 @@ public:
     vector<Borrower> Borrowers;
     
     DataFile File;
-    
-    virtual std::unordered_map<std::string, float>& makeHashTable(DataFile& file) override;
+    virtual std::unordered_map<std::string, float>& makeHashTable() override;
     
 };
 
