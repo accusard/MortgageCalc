@@ -19,14 +19,13 @@
 
 using namespace std;
 
-const string DATA_FILE_NAME = "data.bin";
+const string DATA_FILE_NAME = "debugsave.txt";
 const float ToPercent(const float decimal);
 const float toMonthlyInterestRate(const float interestPerc);
 
 struct MortgageData {
-    MortgageData() : purchasePrice(0.f), loanAmount(0.f), downpayment(0.f),
-    termYears(0), percentInterest(0.f), percentDown(0.f) {}
     
+    MortgageData();
     MortgageData(const float purchse, const float down, const int years, const float interestPerc);
     
     void recalculateMortgage();
@@ -56,7 +55,7 @@ protected:
     
 public:
     float downpayment;
-    int termYears;
+    float termYears;
     float percentInterest;
     float percentDown;
     vector<Borrower> Borrowers;

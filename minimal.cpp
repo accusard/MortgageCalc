@@ -136,21 +136,17 @@ bool MyApp::OnInit()
     // loop and the application will run. If we returned false here, the
     // application would exit immediately.
     
-    // fix amortization calculations
+    // maintenance and testings
     MortgageData mData;
     
-    ifstream ifile(DATA_FILE_NAME, ios::in|ios::binary);
+    ifstream ifile(DATA_FILE_NAME, ios::in);
     
     if(ifile.is_open()) {
         mData.load(DATA_FILE_NAME.c_str());
         ifile.close();
     }
     else {
-        const int purchasePrice = 400000;
-        const float downpayment = 10000.f;
-        const int terms = 30;
-        const float percentInt = 4.f;
-        mData = MortgageData(purchasePrice, downpayment, terms, percentInt);
+        // save a default data
         mData.save(DATA_FILE_NAME.c_str());
     }
 

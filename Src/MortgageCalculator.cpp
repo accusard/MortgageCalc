@@ -20,9 +20,17 @@ const float toMonthlyInterestRate(const float annualInterest) {
     return interestRate;
 }
 
-MortgageData::MortgageData(const float p, const float d, const int y, const float i) : purchasePrice(p), downpayment(d), termYears(y), percentInterest(i) {
+MortgageData::MortgageData() : purchasePrice(400000.f), loanAmount(0.f), downpayment(40000.f),
+termYears(30.f), percentInterest(4.f), percentDown(0.f) {
+    recalculateMortgage();
+    makeHashTable();
+}
+
+MortgageData::MortgageData(const float p, const float d, const int y, const float i) : termYears(y), percentInterest(i) {
     
     update(p, d);
+    makeHashTable();
+
 }
 
 void MortgageData::recalculateMortgage() {
@@ -76,7 +84,7 @@ const float MortgageData::getBorrowersPayRates() const{
 
 void MortgageData::save(const char* filename) {
     cout << "saving " << filename << endl << endl;
-    ofstream ofile(filename, ios::out|ios::trunc|ios::binary);
+    ofstream ofile(filename, ios::out|ios::trunc);
     
     if(ofile.is_open()) {
         for(auto map : makeHashTable()) {
@@ -88,7 +96,7 @@ void MortgageData::save(const char* filename) {
 
 void MortgageData::load(const char* filename) {
     cout << "loading " << filename << endl << endl;
-    ifstream ifile(filename, ios::in|ios::binary);
+    ifstream ifile(filename, ios::in);
     
     if(ifile.is_open()) {
         // read each line 1 by 1 and add to variable
@@ -127,7 +135,7 @@ const unordered_map<string, float>& MortgageData::makeHashTable() {
     makeHash(GET_VAR_NAME(downpayment), downpayment);
     makeHash(GET_VAR_NAME(termYears), termYears);
     makeHash(GET_VAR_NAME(percentInterest), percentInterest);
-    makeHash(GET_VAR_NAME(percentDown),percentDown);
+    makeHash(GET_VAR_NAME(percentDown), percentDown);
     
     return dataHash;
 }
@@ -135,16 +143,15 @@ const unordered_map<string, float>& MortgageData::makeHashTable() {
 void MortgageData::readFrom(const string& inLine) {
     
     unsigned long stopat = inLine.find(":");
-    const string varname = inLine.substr(0, stopat);
-    float *floatptr = nullptr;
+    const string& varname = inLine.substr(0, stopat);
+    
+    for(auto map : dataHash)
+    {
+        if((map.first.compare(varname) == 0)) {
+            map.second = stof(inLine.substr(stopat+1));
+            return;
+        }
 
-    if(varname == GET_VAR_NAME(termYears)) { termYears = stoi(inLine.substr(stopat+1)); return; }
-    else if(varname == GET_VAR_NAME(percentDown)) floatptr = &percentDown;
-    else if(varname == GET_VAR_NAME(percentInterest)) floatptr = &percentInterest;
-    else if(varname == GET_VAR_NAME(downpayments)) floatptr = &downpayment;
-    else if(varname == GET_VAR_NAME(loanAmount)) floatptr = &loanAmount;
-    else if(varname == GET_VAR_NAME(purchasePrice)) floatptr = &purchasePrice;
 
-    if(floatptr != nullptr)
-        *floatptr = stof(inLine.substr(stopat+1));
+    }
 }
