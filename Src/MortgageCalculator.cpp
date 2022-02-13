@@ -125,17 +125,17 @@ void MortgageData::setInterest(const float percent) {
     percentInterest = percent;
 }
 
-void MortgageData::makeHash(const string& str, const float val) {
+void MortgageData::insert(const string& str, const float val) {
     dataHash.insert(make_pair(str, val));
 }
 
 const unordered_map<string, float>& MortgageData::makeHashTable() {
-    makeHash(GET_VAR_NAME(purchasePrice), purchasePrice);
-    makeHash(GET_VAR_NAME(loanAmount), loanAmount);
-    makeHash(GET_VAR_NAME(downpayment), downpayment);
-    makeHash(GET_VAR_NAME(termYears), termYears);
-    makeHash(GET_VAR_NAME(percentInterest), percentInterest);
-    makeHash(GET_VAR_NAME(percentDown), percentDown);
+    MAKE_HASH(purchasePrice);
+    MAKE_HASH(loanAmount);
+    MAKE_HASH(downpayment);
+    MAKE_HASH(termYears);
+    MAKE_HASH(percentInterest);
+    MAKE_HASH(percentDown);
     
     return dataHash;
 }

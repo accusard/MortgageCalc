@@ -9,6 +9,7 @@
 #define MortgageCalculator_h
 
 #define GET_VAR_NAME(var) (#var)
+#define MAKE_HASH(name) insert(GET_VAR_NAME(name), name);
 
 #include <string>
 #include <vector>
@@ -61,7 +62,7 @@ public:
     vector<Borrower> Borrowers;
     
 private:
-    void makeHash(const string& str, const float val);
+    void insert(const string& str, const float val);
     const unordered_map<string, float>& makeHashTable();
     void readFrom(const string& line);
 };
