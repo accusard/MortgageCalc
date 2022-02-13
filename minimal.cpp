@@ -21,6 +21,7 @@
 
 // to test read/write data
 #include <fstream>
+#include "DataFile.hpp"
 #include "Menu.h"
 #include "Action.hpp"
 //
@@ -142,12 +143,12 @@ bool MyApp::OnInit()
     ifstream ifile(DATA_FILE_NAME, ios::in);
     
     if(ifile.is_open()) {
-        mData.load(DATA_FILE_NAME.c_str());
+        mData.File.load(DATA_FILE_NAME.c_str());
         ifile.close();
     }
     else {
         // save a default data
-        mData.save(DATA_FILE_NAME.c_str());
+        mData.File.save(DATA_FILE_NAME.c_str(), mData.makeHashTable, mData.File);
     }
 
     Menu main("Main Menu");

@@ -8,23 +8,21 @@
 #ifndef MortgageCalculator_h
 #define MortgageCalculator_h
 
-#define GET_VAR_NAME(var) (#var)
-#define MAKE_HASH(name) insert(GET_VAR_NAME(name), name);
-
-#include <string>
-#include <vector>
+//#include <string>
+//#include <vector>
 #include <cmath>
 #include <unordered_map>
+#include "DataFile.hpp"
+#include "IDataFileInterface.h"
 #include "QueryData.hpp"
 #include "Borrower.h"
 
 using namespace std;
 
-const string DATA_FILE_NAME = "debugsave.txt";
 const float ToPercent(const float decimal);
 const float toMonthlyInterestRate(const float interestPerc);
 
-struct MortgageData {
+struct MortgageData : public IDataFileInterface {
     
     MortgageData();
     MortgageData(const float purchse, const float down, const int years, const float interestPerc);
@@ -43,11 +41,6 @@ struct MortgageData {
     void setTerms(const int years);
     void setInterest(const float percent);
     
-    // saving and loading file
-    unordered_map<string, float> dataHash;
-    void save(const char* filename);
-    void load(const char* filename);
-    
 protected:
     // the home's purchase price
     float purchasePrice;
@@ -61,10 +54,10 @@ public:
     float percentDown;
     vector<Borrower> Borrowers;
     
-private:
-    void insert(const string& str, const float val);
-    const unordered_map<string, float>& makeHashTable();
-    void readFrom(const string& line);
+    DataFile File;
+    
+    virtual std::unordered_map<std::string, float>& makeHashTable(DataFile& file) override;
+    
 };
 
 struct MortgageCalculator {
