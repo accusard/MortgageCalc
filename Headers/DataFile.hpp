@@ -1,5 +1,5 @@
 //
-//  Borrower.hpp
+//  DataFile.hpp
 //  MortgageCalc
 //
 //  (c) Vanny Sou on 2021-2022

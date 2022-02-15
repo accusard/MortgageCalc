@@ -2,7 +2,7 @@
 //  IDataFileInterface.h
 //  MortgageCalc
 //
-//  Created by Vanny Sou on 2/13/22.
+//  (c) Vanny Sou on 2021-2022
 //
 
 #ifndef IDataFileInterface_h
