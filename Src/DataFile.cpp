@@ -33,20 +33,14 @@ void DataFile::load(const char* filename, MortgageData& data) {
         // read each line 1 by 1 and add to variable
         std::string line;
         while(getline(ifile,line))
-        {
-            readFrom(line, data);
-        }
+            read(line, data);
         ifile.close();
     }
     data.recalculateMortgage();
     cout << endl;
 }
 
-//void DataFile::insert(const std::string& str, const float val) {
-//    dataHash.insert(make_pair(str, val));
-//}
-
-void DataFile::readFrom(const std::string& inLine, MortgageData& data) {
+void DataFile::read(const std::string& inLine, MortgageData& data) {
     
     unsigned long stopat = inLine.find(":");
     const std::string& varname = inLine.substr(0, stopat);
@@ -62,6 +56,7 @@ void DataFile::readFrom(const std::string& inLine, MortgageData& data) {
     if(floatptr != nullptr)
         *floatptr = stof(inLine.substr(stopat+1));
 
+    // print out info to console
     for(auto map : dataHash)
     {
         if((map.first.compare(varname) == 0)) {

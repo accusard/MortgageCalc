@@ -20,7 +20,7 @@ const std::string DATA_FILE_NAME = "debugsave.txt";
 
 class DataFile {
 private:
-    void readFrom(const std::string& inLine, MortgageData& data);
+    void read(const std::string& inLine, MortgageData& data);
     
 public:
     // saving and loading file

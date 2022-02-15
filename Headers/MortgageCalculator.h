@@ -23,7 +23,6 @@ const float ToPercent(const float decimal);
 const float toMonthlyInterestRate(const float interestPerc);
 
 struct MortgageData : public IDataFileInterface {
-    
     MortgageData();
     virtual ~MortgageData() {}
     MortgageData(const float purchse, const float down, const int years, const float interestPerc);
