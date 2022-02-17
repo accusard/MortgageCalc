@@ -9,14 +9,15 @@
 
 #include "mcApp.hpp"
 #include "MortgageCalculator.h"
-#include "Menu.h"
-#include "Action.hpp"
+#include "mcMain.hpp"
 #include <fstream>
 
 wxIMPLEMENT_APP(mcApp);
 
 
 bool mcApp::OnInit() {
+    
+    // init data
     MortgageData mData;
     
     ifstream ifile(DATA_FILE_NAME, ios::in);
@@ -29,14 +30,10 @@ bool mcApp::OnInit() {
         // save a default data
         mData.File.save(DATA_FILE_NAME.c_str(), mData);
     }
-
-    Menu main("Main Menu");
-    shared_ptr<Action> action = make_shared<AmortizationReport>(mData);
     
-    main.bindAction(action);
-    main.run();
-    
-    mData.File.save(DATA_FILE_NAME.c_str(), mData);
+    // init window
+    frame1 = new mcMain();
+    frame1->Show();
     
     return true;
 }

@@ -11,6 +11,10 @@
 #include "wx/wx.h"
 
 class mcApp : public wxApp {
+    
+private:
+    class mcMain* frame1 = nullptr;
+    
 public:
     mcApp() {}
     ~mcApp() {}

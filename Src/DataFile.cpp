@@ -19,7 +19,7 @@ void DataFile::save(const char* filename, MortgageData& data) {
     if(ofile.is_open()) {
         for(auto map : data.makeHashTable()) {
             ofile << map.first <<":" << map.second << std::endl;
-            cout << map.first << " : " << map.second << std::endl;
+//            cout << map.first << " : " << map.second << std::endl;
         }
         ofile.close();
     }
@@ -61,7 +61,7 @@ void DataFile::read(const std::string& inLine, MortgageData& data) {
     {
         if((map.first.compare(varname) == 0)) {
             map.second = stof(inLine.substr(stopat+1));
-            cout << map.first << " : " << map.second << endl;
+//            cout << map.first << " : " << map.second << endl;
             return;
         }
 
