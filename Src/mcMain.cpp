@@ -22,7 +22,7 @@ mcMain::mcMain() : wxFrame(nullptr, wxID_ANY, "Mortgage Calculator", wxPoint(50,
     btns.push_back(newButton(PRINT_REPORT_BTN_ID, "Print Report"));
     
     list = new wxListBox(this, wxID_ANY, wxPoint(200,10), wxSize(300,300));
-    
+    // wxMenu: create menu list
 }
 
 mcMain::~mcMain() {

@@ -8,11 +8,12 @@
 #ifndef MortgageCalculator_h
 #define MortgageCalculator_h
 
-//#include <string>
-//#include <vector>
+#define GET_VAR_NAME(var) (#var)
+#define MAKE_HASH(name) hash.insert_or_assign(GET_VAR_NAME(name),name)
+
 #include <cmath>
 #include <unordered_map>
-#include "DataFile.hpp"
+#include "mcFile.hpp"
 #include "IDataFileInterface.h"
 #include "QueryData.hpp"
 #include "Borrower.h"
@@ -53,8 +54,9 @@ public:
     float percentDown;
     vector<Borrower> Borrowers;
     
-    DataFile File;
-    virtual const std::unordered_map<std::string, float>& makeHashTable() override;
+    virtual void makeHashTable(std::unordered_map<std::string, float>& hash) override;
+    
+    
     
 };
 

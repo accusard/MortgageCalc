@@ -8,8 +8,8 @@
 
 
 #include "mcApp.hpp"
-#include "MortgageCalculator.h"
 #include "mcMain.hpp"
+#include "MortgageCalculator.h"
 #include <fstream>
 
 wxIMPLEMENT_APP(mcApp);
@@ -19,17 +19,10 @@ bool mcApp::OnInit() {
     
     // init data
     MortgageData mData;
+    mcFile file;
     
-    ifstream ifile(DATA_FILE_NAME, ios::in);
-    
-    if(ifile.is_open()) {
-        mData.File.load(DATA_FILE_NAME.c_str(), mData);
-        ifile.close();
-    }
-    else {
-        // save a default data
-        mData.File.save(DATA_FILE_NAME.c_str(), mData);
-    }
+    if(!file.load(DATA_FILE_NAME.c_str(), mData))
+        file.save(DATA_FILE_NAME.c_str(), mData);
     
     // init window
     frame1 = new mcMain();
