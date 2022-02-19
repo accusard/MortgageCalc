@@ -9,13 +9,13 @@
 #define Action_hpp
 
 #include <map>
-#include "MortgageCalculator.h"
+#include "mcData.hpp"
+#include "Borrower.h"
+#include "QueryData.hpp"
 
 class Menu;
 
 using namespace std;
-
-
 
 struct Action {
     Action() {}
@@ -23,18 +23,18 @@ struct Action {
     virtual void execute() {}
 };
 
-class MortgageReport : public MortgageData, public Action {
+class MortgageReport : public mcData, public Action {
 public:
-    MortgageReport(MortgageData& dRef) : MortgageData(dRef) {}
+    MortgageReport(mcData& dRef) : mcData(dRef) {}
     virtual void execute() override;
     
 private:
     
 };
 
-class AmortizationReport : public MortgageData, public Action {
+class AmortizationReport : public mcData, public Action {
 public:
-    AmortizationReport(MortgageData& ref) : MortgageData(ref) {}
+    AmortizationReport(mcData& ref) : mcData(ref) {}
     virtual void execute() override;
     
     // separate calculations from print output
@@ -55,9 +55,9 @@ private:
 };
 
 
-class DTIReport : public MortgageData, public Action {
+class DTIReport : public mcData, public Action {
 public:
-    DTIReport(MortgageData& dref) : MortgageData(dref) {}
+    DTIReport(mcData& dref) : mcData(dref) {}
     virtual void execute() override;
     
 private:
@@ -65,10 +65,10 @@ private:
 };
 
 
-class SequencePrompts : public MortgageData, public Action {
+class SequencePrompts : public mcData, public Action {
     
 public:
-    SequencePrompts(MortgageData& d);
+    SequencePrompts(mcData& d);
     
     void addQuery(const string &prompt, float &data);
     void addQuery(const string &prompt, int &data);

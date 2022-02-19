@@ -9,6 +9,8 @@
 #define QueryData_hpp
 
 #include <iostream>
+#include "Borrower.h"
+
 using namespace std;
 
 class QueryToString {

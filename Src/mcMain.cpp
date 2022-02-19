@@ -56,7 +56,7 @@ void mcMain::OnButtonClicked(wxCommandEvent &evt) {
         case NEW_LOAN_BTN_ID:
         {
             mList->AppendString("Create a new loan");
-            MortgageData loan;
+            mcData loan;
             SequencePrompts loanPrompts(loan);
             
             loanPrompts.addQuery("Enter the purchase price of the home - ", loan.purchasePrice);

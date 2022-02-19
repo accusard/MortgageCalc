@@ -12,7 +12,6 @@
 #include "Earnings.h"
 
 class Earnings;
-struct MortgageData;
 using namespace std;
 
 struct Name {

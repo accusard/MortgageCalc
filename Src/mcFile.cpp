@@ -6,12 +6,12 @@
 //
 
 #include <fstream>
-#include "MortgageCalculator.h"
+#include "mcData.hpp"
 #include "mcFile.hpp"
 #include "IDataFileInterface.h"
 
 
-void mcFile::save(const char* filename, MortgageData& data) {
+void mcFile::save(const char* filename, mcData& data) {
     data.recalculateMortgage();
     data.makeHashTable(dataHash);
     
@@ -21,16 +21,16 @@ void mcFile::save(const char* filename, MortgageData& data) {
     if(ofile.is_open()) {
         for(auto map : dataHash) {
             ofile << map.first <<":" << map.second << std::endl;
-            cout << map.first << " : " << map.second << std::endl;
+            std::cout << map.first << " : " << map.second << std::endl;
         }
         ofile.close();
     }
 }
 
-const bool mcFile::load(const char* filename, MortgageData& data) {
+const bool mcFile::load(const char* filename, mcData& data) {
     bool bsuccess = false;
     data.makeHashTable(dataHash);
-    ifstream ifile(filename, ios::in);
+    ifstream ifile(filename, std::ios::in);
     if(ifile.is_open()) {
         std::cout << "loading from " << filename << std::endl << std::endl;
         std::ifstream ifile(filename, std::ios::in);
@@ -41,14 +41,14 @@ const bool mcFile::load(const char* filename, MortgageData& data) {
             read(line, data);
         
         data.recalculateMortgage();
-        cout << endl;
+        std::cout << endl;
         bsuccess = true;
     }
     ifile.close();
     return bsuccess;
 }
 
-void mcFile::read(const std::string& inLine, MortgageData& data) {
+void mcFile::read(const std::string& inLine, mcData& data) {
     
     unsigned long stopat = inLine.find(":");
     const std::string& varname = inLine.substr(0, stopat);
@@ -69,7 +69,7 @@ void mcFile::read(const std::string& inLine, MortgageData& data) {
     {
         if((map.first.compare(varname) == 0)) {
             map.second = stof(inLine.substr(stopat+1));
-            cout << map.first << " : " << map.second << endl;
+            std::cout << map.first << " : " << map.second << std::endl;
             return;
         }
 

@@ -11,19 +11,19 @@
 #include <iostream>
 #include <unordered_map>
 
-struct MortgageData;
+struct mcData;
 
 const std::string DATA_FILE_NAME = "data.bin";
 
 class mcFile {
 private:
-    void read(const std::string& inLine, MortgageData& data);
+    void read(const std::string& inLine, mcData& data);
     
 public:
     // saving and loading file
     std::unordered_map<std::string, float> dataHash;
-    void save(const char* filename, MortgageData& data);
-    const bool load(const char* filename, MortgageData& data);
+    void save(const char* filename, mcData& data);
+    const bool load(const char* filename, mcData& data);
     
     
     

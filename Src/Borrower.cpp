@@ -6,7 +6,7 @@
 //
 
 #include "Borrower.h"
-#include "MortgageCalculator.h"
+#include "QueryData.hpp"
 
 
 
