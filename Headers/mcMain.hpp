@@ -9,26 +9,28 @@
 #define mcMain_hpp
 
 #include "wx/wx.h"
+#include "wx/mdi.h"
 
-const unsigned int NEW_LOAN_BTN_ID = 1000;
-const unsigned int UPDATE_LOAN_BTN_ID = 1001;
-const unsigned int PRINT_REPORT_BTN_ID = 1002;
+class wxCommand;
 
-class mcMain : public wxFrame {
+class mcMain : public wxMDIParentFrame {
 public:
     mcMain();
     ~mcMain();
     
     wxButton* newButton(const int btnId, const wxString& label);
     
-public:
+private:
+    wxDECLARE_EVENT_TABLE();
+    void OnButtonClicked(wxCommandEvent &evt);
+    void OnNewMenu(wxCommand& evt);
+    void OnOpenMenu(wxCommand& evt);
+    void OnSaveMenu(wxCommand& evt);
     
     std::vector<wxButton*> btns;
-    wxListBox *list = nullptr;
-    
-    void OnButtonClicked(wxCommandEvent &evt);
-    
-    wxDECLARE_EVENT_TABLE();
+    wxListBox *mList = nullptr;
+    wxToolBar *mToolbar = nullptr;
+    wxMenuBar *mMenuBar = nullptr;
 };
 
 #endif /* mcMain_hpp */

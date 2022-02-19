@@ -7,22 +7,34 @@
 
 #include "mcMain.hpp"
 #include "Action.hpp"
+#include "eventId.h"
 
-
-wxBEGIN_EVENT_TABLE(mcMain, wxFrame)
+wxBEGIN_EVENT_TABLE(mcMain, wxMDIParentFrame)
     EVT_BUTTON(NEW_LOAN_BTN_ID, mcMain::OnButtonClicked)
     EVT_BUTTON(UPDATE_LOAN_BTN_ID, mcMain::OnButtonClicked)
     EVT_BUTTON(PRINT_REPORT_BTN_ID, mcMain::OnButtonClicked)
+//    EVT_MENU(MnuEventID::NEW, mcMain::OnNewMenu)
 wxEND_EVENT_TABLE()
 
-mcMain::mcMain() : wxFrame(nullptr, wxID_ANY, "Mortgage Calculator", wxPoint(50,50), wxSize(640,480)) {
+mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", wxPoint(50,50), wxSize(640,480)) {
     
     btns.push_back(newButton(NEW_LOAN_BTN_ID, "New Loan"));
     btns.push_back(newButton(UPDATE_LOAN_BTN_ID, "Update Loan"));
     btns.push_back(newButton(PRINT_REPORT_BTN_ID, "Print Report"));
     
-    list = new wxListBox(this, wxID_ANY, wxPoint(200,10), wxSize(300,300));
-    // wxMenu: create menu list
+    mList = new wxListBox(this, wxID_ANY, wxPoint(200,10), wxSize(300,300));
+    
+    mToolbar = new wxToolBar(this, wxID_ANY);
+    
+    mMenuBar = new wxMenuBar();
+    this->SetMenuBar(mMenuBar);
+    
+    wxMenu* MenuFile = new wxMenu();
+    MenuFile->Append(NEW, "New");
+    MenuFile->Append(OPEN, "Open");
+    MenuFile->Append(SAVE, "Save");
+    
+    mMenuBar->Append(MenuFile, "File");
 }
 
 mcMain::~mcMain() {
@@ -43,7 +55,7 @@ void mcMain::OnButtonClicked(wxCommandEvent &evt) {
     switch (btnId) {
         case NEW_LOAN_BTN_ID:
         {
-            list->AppendString("Create a new loan");
+            mList->AppendString("Create a new loan");
             MortgageData loan;
             SequencePrompts loanPrompts(loan);
             
@@ -54,14 +66,27 @@ void mcMain::OnButtonClicked(wxCommandEvent &evt) {
             break;
         }
         case UPDATE_LOAN_BTN_ID:
-            list->AppendString("Update an existing loan");
+            mList->AppendString("Update an existing loan");
             break;
             
         case PRINT_REPORT_BTN_ID:
-            list->AppendString("Which report?");
+            mList->AppendString("Which report?");
             break;
     }
     
-//    evt.Skip();
+    evt.Skip();
 }
+
+void mcMain::OnNewMenu(wxCommand& evt) {
+    
+}
+
+void mcMain::OnOpenMenu(wxCommand& evt) {
+    
+}
+
+void mcMain::OnSaveMenu(wxCommand& evt) {
+    
+}
+
 
