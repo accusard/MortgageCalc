@@ -18,19 +18,15 @@ public:
     mcMain();
     ~mcMain();
     
-    wxButton* newButton(const int btnId, const wxString& label);
-    
 private:
-    wxDECLARE_EVENT_TABLE();
-    void OnButtonClicked(wxCommandEvent &evt);
-    void OnNewMenu(wxCommand& evt);
-    void OnOpenMenu(wxCommand& evt);
-    void OnSaveMenu(wxCommand& evt);
     
-    std::vector<wxButton*> btns;
-    wxListBox *mList = nullptr;
-    wxToolBar *mToolbar = nullptr;
+    void OnNewMenu(wxCommandEvent& evt);
+    void OnOpenMenu(wxCommandEvent& evt);
+    void OnSaveMenu(wxCommandEvent& evt);
+    void OnQuitMenu(wxCommandEvent& evt);
+    
     wxMenuBar *mMenuBar = nullptr;
+    wxDECLARE_EVENT_TABLE();
 };
 
 #endif /* mcMain_hpp */
