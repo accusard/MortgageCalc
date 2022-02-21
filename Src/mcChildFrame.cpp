@@ -6,30 +6,21 @@
 //
 
 #include "mcChildFrame.hpp"
-#include "eventId.h"
+#include "mcType.h"
+#include "wx/notebook.h"
 
-mcChildFrame::mcChildFrame(wxMDIParentFrame* setFrame, const wxString& name) : wxMDIChildFrame(setFrame, wxID_ANY, name) {
-    mStatusBar = new wxStatusBar(this);
-    mSlider = new wxSlider(this, wxID_ANY, 50, 0, 100);
-    mToolBar = new wxToolBar(this, wxID_ANY);
+mcChildFrame::mcChildFrame(wxMDIParentFrame* parent, const wxString& name) : wxMDIChildFrame(parent, wxID_ANY, name, POINT_MAC_BOOK_PRO, wxSize(1280,720)) {
+    wxNotebook *book = new wxNotebook(this, wxID_ANY);
     
-    btns.push_back(newButton(NEW_LOAN_BTN_ID, "New Loan"));
-    btns.push_back(newButton(UPDATE_LOAN_BTN_ID, "Update Loan"));
-    btns.push_back(newButton(PRINT_REPORT_BTN_ID, "Print Report"));
+    wxListBox *overview = new wxListBox(book, wxID_ANY);
+    wxListBox *report = new wxListBox(book, wxID_ANY);
+    wxListBox *schedule = new wxListBox(book, wxID_ANY);
+    
+    book->AddPage(overview, "Overview");
+    book->AddPage(report, "Mortgage Report");
+    book->AddPage(schedule, "Scheduled Payments");
 }
 
-mcChildFrame::~mcChildFrame() {
-    for(auto btn : btns) {
-        if(btn != nullptr)
-            delete btn;
-    }
-}
+mcChildFrame::~mcChildFrame() {}
 
-wxButton* mcChildFrame::newButton(const int btnId, const wxString& label) {
-    const unsigned int hpos = (int)btns.size()*50 + 10;
-    return new wxButton(this, btnId, label, wxPoint(hpos, 10), wxSize(150,50));
-}
 
-void mcChildFrame::OnButtonClicked(wxCommandEvent &evt) {
-    evt.Skip();
-}

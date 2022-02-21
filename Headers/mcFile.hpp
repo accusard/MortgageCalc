@@ -17,13 +17,14 @@ const std::string DATA_FILE_NAME = "data.bin";
 
 class mcFile {
 private:
-    void read(const std::string& inLine, mcData& data);
+    std::string* read(const std::string& inLine, mcData& data, const char *stopat);
+    std::string* CurrentVarString = nullptr;
     
 public:
-    // saving and loading file
+    // saving and opening file
     std::unordered_map<std::string, float> dataHash;
     void save(const char* filename, mcData& data);
-    const bool load(const char* filename, mcData& data);
+    const bool open(const char* filename, mcData& data);
     
     
     

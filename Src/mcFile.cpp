@@ -27,52 +27,59 @@ void mcFile::save(const char* filename, mcData& data) {
     }
 }
 
-const bool mcFile::load(const char* filename, mcData& data) {
+const bool mcFile::open(const char* filename, mcData& data) {
     bool bsuccess = false;
     data.makeHashTable(dataHash);
     ifstream ifile(filename, std::ios::in);
     if(ifile.is_open()) {
-        std::cout << "loading from " << filename << std::endl << std::endl;
+        std::cout << "opening from " << filename << std::endl << std::endl;
         std::ifstream ifile(filename, std::ios::in);
         
         // read each line 1 by 1 and add to variable
         std::string line;
+        const char* stopat = ":";
         while(getline(ifile,line))
-            read(line, data);
+            CurrentVarString = read(line, data, stopat);
         
         data.recalculateMortgage();
         std::cout << endl;
+        // print debug out info to console
+        for(auto map : dataHash)
+        {
+            if((map.first.compare(*CurrentVarString) == 0)) {
+                map.second = stof(inLine.substr(stopat+1));
+                std::cout << map.first << " : " << map.second << std::endl;
+                return;
+            }
+        }
         bsuccess = true;
     }
     ifile.close();
     return bsuccess;
 }
 
-void mcFile::read(const std::string& inLine, mcData& data) {
+std::string* mcFile::read(const std::string& inLine, mcData& data, const char *stopAt) {
     
-    unsigned long stopat = inLine.find(":");
-    const std::string& varname = inLine.substr(0, stopat);
+    unsigned long stpat = inLine.find(stopAt);
+    
+    if(CurrentVarString != nullptr)
+    {
+        delete CurrentVarString;
+        CurrentVarString = nullptr;
+    }
+    
+    CurrentVarString = new std::string(inLine.substr(0, stpat));
     float* floatptr = nullptr;
     
-    if(varname == GET_VAR_NAME(termYears)) { data.termYears = stoi(inLine.substr(stopat+1)); return; }
-    else if(varname == GET_VAR_NAME(percentDown)) floatptr = &data.percentDown;
-    else if(varname == GET_VAR_NAME(percentInterest)) floatptr = &data.percentInterest;
-    else if(varname == GET_VAR_NAME(downpayments)) floatptr = &data.downpayment;
-    else if(varname == GET_VAR_NAME(loanAmount)) floatptr = &data.loanAmount;
-    else if(varname == GET_VAR_NAME(purchasePrice)) floatptr = &data.purchasePrice;
+    if(*CurrentVarString == GET_VAR_NAME(termYears)) { data.termYears = stoi(inLine.substr(stpat+1)); return CurrentVarString; }
+    else if(*CurrentVarString == GET_VAR_NAME(percentDown)) floatptr = &data.percentDown;
+    else if(*CurrentVarString == GET_VAR_NAME(percentInterest)) floatptr = &data.percentInterest;
+    else if(*CurrentVarString == GET_VAR_NAME(downpayments)) floatptr = &data.downpayment;
+    else if(*CurrentVarString == GET_VAR_NAME(loanAmount)) floatptr = &data.loanAmount;
+    else if(*CurrentVarString == GET_VAR_NAME(purchasePrice)) floatptr = &data.purchasePrice;
 
     if(floatptr != nullptr)
-        *floatptr = stof(inLine.substr(stopat+1));
-
-    // print out info to console
-    for(auto map : dataHash)
-    {
-        if((map.first.compare(varname) == 0)) {
-            map.second = stof(inLine.substr(stopat+1));
-            std::cout << map.first << " : " << map.second << std::endl;
-            return;
-        }
-
-
-    }
+        *floatptr = stof(inLine.substr(stpat+1));
+    
+    return CurrentVarString;
 }

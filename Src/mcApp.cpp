@@ -17,17 +17,17 @@ wxIMPLEMENT_APP(mcApp);
 
 
 bool mcApp::OnInit() {
-    
-    // init data
-    mcData mData;
-    mcFile file;
-    
-    if(!file.load(DATA_FILE_NAME.c_str(), mData))
-        file.save(DATA_FILE_NAME.c_str(), mData);
-    
     // init window
     frame1 = new mcMain();
     frame1->Show();
     
     return true;
 }
+
+mcData* mcApp::NewMortgageData(mcData *oldData) {
+    if(oldData != nullptr)
+        delete oldData;
+    
+    return new mcData();
+}
+

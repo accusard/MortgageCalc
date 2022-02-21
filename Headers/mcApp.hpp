@@ -9,6 +9,7 @@
 #define mcApp_hpp
 
 #include "wx/wx.h"
+struct mcData;
 
 class mcApp : public wxApp {
     
@@ -20,6 +21,9 @@ public:
     ~mcApp() {}
     
     virtual bool OnInit();
+    mcData* NewMortgageData(mcData* oldData);
 };
+
+DECLARE_APP(mcApp);
 
 #endif /* mcApp_hpp */

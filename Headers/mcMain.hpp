@@ -11,21 +11,20 @@
 #include "wx/wx.h"
 #include "wx/mdi.h"
 
-class wxCommand;
-
 class mcMain : public wxMDIParentFrame {
 public:
     mcMain();
     ~mcMain();
     
 private:
-    
     void OnNewMenu(wxCommandEvent& evt);
     void OnOpenMenu(wxCommandEvent& evt);
     void OnSaveMenu(wxCommandEvent& evt);
     void OnQuitMenu(wxCommandEvent& evt);
     
     wxMenuBar *mMenuBar = nullptr;
+    wxTextCtrl *textCtlr = nullptr;
+    
     wxDECLARE_EVENT_TABLE();
 };
 
