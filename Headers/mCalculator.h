@@ -8,13 +8,6 @@
 #ifndef MortgageCalculator_h
 #define MortgageCalculator_h
 
-//#include <cmath>
-//#include <unordered_map>
-//#include "mcFile.hpp"
-//#include "IDataFileInterface.h"
-//#include "QueryData.hpp"
-//#include "Borrower.h"
-
 const float ToPercent(const float decimal) { return decimal / 0.01f; }
 const float toMonthlyInterestRate(const float interestPerc) {
     float interestRate = interestPerc * 0.01f / 12;

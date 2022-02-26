@@ -14,11 +14,12 @@ struct mcData;
 class mcApp : public wxApp {
     
 private:
+    std::vector<mcData*> mAppData;
     class mcMain* frame1 = nullptr;
     
 public:
     mcApp() {}
-    ~mcApp() {}
+    ~mcApp();
     
     virtual bool OnInit();
     mcData* NewMortgageData(mcData* oldData);

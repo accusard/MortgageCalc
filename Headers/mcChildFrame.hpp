@@ -10,10 +10,14 @@
 
 #include "wx/mdi.h"
 
+
+
+
 class mcChildFrame : public wxMDIChildFrame {
 public:
-    mcChildFrame(wxMDIParentFrame* setFrame, const wxString& name);
+    mcChildFrame(wxMDIParentFrame* parent, const wxString& name);
     ~mcChildFrame();
+    
     
 private:
     

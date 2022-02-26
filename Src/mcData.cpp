@@ -90,3 +90,12 @@ void mcData::makeHashTable(std::unordered_map<std::string, float>& hash) {
     MAKE_HASH(percentInterest);
     MAKE_HASH(percentDown);
 }
+
+const vector<std::string> mcData::GetDataEntryStrings() {
+    std::vector<std::string> entrylist;
+    entrylist.push_back(" Purchase Price");
+    entrylist.push_back(" Downpayment");
+    entrylist.push_back(" Years");
+    entrylist.push_back(" Interest");
+    return entrylist;
+}

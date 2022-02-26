@@ -12,10 +12,11 @@
 #define MAKE_HASH(name) hash.insert_or_assign(GET_VAR_NAME(name),name)
 
 
-#include "IDataFileInterface.h"
+#include "IHashTableInterface.h"
+#include "IDataInterface.h"
 #include "Borrower.h"
 
-struct mcData : public IDataFileInterface {
+struct mcData : public IHashTableInterface, public IDataInterface {
     mcData();
     virtual ~mcData() {}
     mcData(const float purchse, const float down, const int years, const float interestPerc);
@@ -47,7 +48,7 @@ public:
     std::vector<Borrower> Borrowers;
     
     virtual void makeHashTable(std::unordered_map<std::string, float>& hash) override;
-    
+    virtual const vector<std::string> GetDataEntryStrings() override;
     
     
 };

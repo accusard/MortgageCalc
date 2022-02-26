@@ -23,7 +23,6 @@ private:
     void OnQuitMenu(wxCommandEvent& evt);
     
     wxMenuBar *mMenuBar = nullptr;
-    wxTextCtrl *textCtlr = nullptr;
     
     wxDECLARE_EVENT_TABLE();
 };

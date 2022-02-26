@@ -16,18 +16,28 @@
 wxIMPLEMENT_APP(mcApp);
 
 
+mcApp::~mcApp() {
+    for(auto* i : mAppData) {
+        if(i != nullptr) delete i;
+    }
+}
+
 bool mcApp::OnInit() {
     // init window
     frame1 = new mcMain();
-    frame1->Show();
-    
     return true;
 }
 
 mcData* mcApp::NewMortgageData(mcData *oldData) {
-    if(oldData != nullptr)
+    if(oldData != nullptr) {
         delete oldData;
+    }
     
-    return new mcData();
+    mAppData.push_back(new mcData());
+    
+    mcFile file;
+    file.save(DATA_FILE_NAME.c_str(), *mAppData.back());
+    
+    return mAppData.back();
 }
 

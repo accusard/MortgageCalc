@@ -8,7 +8,7 @@
 #include <fstream>
 #include "mcData.hpp"
 #include "mcFile.hpp"
-#include "IDataFileInterface.h"
+#include "IHashTableInterface.h"
 
 
 void mcFile::save(const char* filename, mcData& data) {
@@ -43,15 +43,7 @@ const bool mcFile::open(const char* filename, mcData& data) {
         
         data.recalculateMortgage();
         std::cout << endl;
-        // print debug out info to console
-        for(auto map : dataHash)
-        {
-            if((map.first.compare(*CurrentVarString) == 0)) {
-                map.second = stof(inLine.substr(stopat+1));
-                std::cout << map.first << " : " << map.second << std::endl;
-                return;
-            }
-        }
+    
         bsuccess = true;
     }
     ifile.close();
@@ -71,15 +63,30 @@ std::string* mcFile::read(const std::string& inLine, mcData& data, const char *s
     CurrentVarString = new std::string(inLine.substr(0, stpat));
     float* floatptr = nullptr;
     
-    if(*CurrentVarString == GET_VAR_NAME(termYears)) { data.termYears = stoi(inLine.substr(stpat+1)); return CurrentVarString; }
+    if(*CurrentVarString == GET_VAR_NAME(termYears)) {
+        data.termYears = stoi(inLine.substr(stpat+1));
+        std::cout << *CurrentVarString << " : " << data.termYears << std::endl;
+        return CurrentVarString;
+    }
     else if(*CurrentVarString == GET_VAR_NAME(percentDown)) floatptr = &data.percentDown;
     else if(*CurrentVarString == GET_VAR_NAME(percentInterest)) floatptr = &data.percentInterest;
-    else if(*CurrentVarString == GET_VAR_NAME(downpayments)) floatptr = &data.downpayment;
+    else if(*CurrentVarString == GET_VAR_NAME(downpayment)) floatptr = &data.downpayment;
     else if(*CurrentVarString == GET_VAR_NAME(loanAmount)) floatptr = &data.loanAmount;
     else if(*CurrentVarString == GET_VAR_NAME(purchasePrice)) floatptr = &data.purchasePrice;
-
-    if(floatptr != nullptr)
+    
+    if(floatptr != nullptr) {
         *floatptr = stof(inLine.substr(stpat+1));
     
+        // print debug out info to console
+        for(auto map : dataHash)
+        {
+            if((map.first.compare(*CurrentVarString) == 0)) {
+                map.second = stof(inLine.substr(stpat+1));
+                std::cout << map.first << " : " << map.second << std::endl;
+                return CurrentVarString;
+            }
+        }
+    }
+    std::cout << *CurrentVarString << " : No data" << std::endl;
     return CurrentVarString;
 }
