@@ -11,8 +11,7 @@
 #include "mcBook.hpp"
 #include "mcData.hpp"
 #include "mcType.h"
-#include "wx/listctrl.h"
-#include "wx/editlbox.h"
+#include "mcDataEntryList.hpp"
 
 wxBEGIN_EVENT_TABLE(mcMain, wxMDIParentFrame)
 EVT_MENU(wxID_NEW, mcMain::OnNewMenu)
@@ -35,30 +34,33 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", PO
 mcMain::~mcMain() {}
 
 void mcMain::OnNewMenu(wxCommandEvent& evt) {
+    // create frame to hold all children
+    mcChildFrame *loanFrm = new mcChildFrame(this, wxString("Mortgage Loan ") + std::to_string(GetChildren().size()));
+    
     // create new mcBook to display the loan
-    mcChildFrame *loanFrame = new mcChildFrame(this, wxString("Mortgage Loan ") + std::to_string(GetChildren().size()));
-    mcBook *loanBook = new mcBook(loanFrame, wxID_ANY, wxPoint(445, 0), wxSize(830, 695));
-    loanBook->load(wxGetApp().NewMortgageData(nullptr));
+    mcBook *loanBk = new mcBook(loanFrm, wxID_ANY, wxPoint(445, 0), wxSize(830, 695));
+    loanBk->load(wxGetApp().NewMortgageData(nullptr));
     mcData mcd;
     
-    // create text entry panel
-//    wxPanel* panel = new wxPanel(loanFrame, wxID_ANY, wxDefaultPosition, wxSize(320, 685));
-//    wxListView* listview = new wxListView(panel, wxID_ANY, wxDefaultPosition, wxSize(100, 685));
-//    listview->AppendColumn("");
+    // create text entry list
+    mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, wxID_EDIT, wxDefaultPosition, wxSize(400, 685));
+    lsVw->AppendColumn("Field", wxLIST_FORMAT_LEFT, 150);
+    lsVw->AppendColumn("Value", wxLIST_FORMAT_LEFT, 150);
     
-    wxEditableListBox* editbox = new wxEditableListBox(loanFrame, wxID_ANY, "", wxPoint(5, wxDefaultPosition.y), wxSize(440, 685));
-    wxArrayString astr;
+    // set up the sizer for the child frame
+    wxBoxSizer* lsVwSzr = new wxBoxSizer(wxHORIZONTAL);
+    lsVwSzr->Add(lsVw, 1, wxEXPAND);
+    lsVwSzr->Add(loanBk, 1, wxEXPAND);
+    loanFrm->SetSizer(lsVwSzr);
     
     for(int i = 0; i < mcd.GetDataEntryStrings().size(); i++) {
         wxString s = mcd.GetDataEntryStrings()[i];
-//        listview->InsertItem(i,s);
-        astr.Add(s);
+        lsVw->InsertItem(i, s);
+        lsVw->SetItem(i, 1, "");
     }
-    
-    editbox->SetStrings(astr);
-    
+
     // display
-    loanFrame->Show();
+    loanFrm->Show();
     
     evt.Skip();
 }
@@ -86,3 +88,4 @@ void mcMain::OnQuitMenu(wxCommandEvent& evt) {
     Close();
     evt.Skip();
 }
+
