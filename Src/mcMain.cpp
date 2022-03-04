@@ -20,7 +20,7 @@ EVT_MENU(wxID_SAVE, mcMain::OnSaveMenu)
 EVT_MENU(wxID_EXIT, mcMain::OnQuitMenu)
 wxEND_EVENT_TABLE()
 
-mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", POINT_MAC_BOOK_PRO, wxSize(1280,720)) {
+mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DEFAULT_POS_MBP, wxSize(1280,720)) {
     mMenuBar = new wxMenuBar();
     wxMenu *MenuFile = new wxMenu();
     MenuFile->Append(wxID_NEW, "&New\tCtrl+N");
@@ -34,33 +34,8 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", PO
 mcMain::~mcMain() {}
 
 void mcMain::OnNewMenu(wxCommandEvent& evt) {
-    // create frame to hold all children
-    mcChildFrame *loanFrm = new mcChildFrame(this, wxString("Mortgage Loan ") + std::to_string(GetChildren().size()));
-    
-    // create new mcBook to display the loan
-    mcBook *loanBk = new mcBook(loanFrm, wxID_ANY, wxPoint(445, 0), wxSize(830, 695));
-    loanBk->load(wxGetApp().NewMortgageData(nullptr));
-    mcData mcd;
-    
-    // create text entry list
-    mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, wxID_EDIT, wxDefaultPosition, wxSize(400, 685));
-    lsVw->AppendColumn("Field", wxLIST_FORMAT_LEFT, 150);
-    lsVw->AppendColumn("Value", wxLIST_FORMAT_LEFT, 150);
-    
-    // set up the sizer for the child frame
-    wxBoxSizer* lsVwSzr = new wxBoxSizer(wxHORIZONTAL);
-    lsVwSzr->Add(lsVw, 1, wxEXPAND);
-    lsVwSzr->Add(loanBk, 1, wxEXPAND);
-    loanFrm->SetSizer(lsVwSzr);
-    
-    for(int i = 0; i < mcd.GetDataEntryStrings().size(); i++) {
-        wxString s = mcd.GetDataEntryStrings()[i];
-        lsVw->InsertItem(i, s);
-        lsVw->SetItem(i, 1, "");
-    }
-
-    // display
-    loanFrm->Show();
+    mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN);
+    mrgLnWin->Show();
     
     evt.Skip();
 }
@@ -89,3 +64,29 @@ void mcMain::OnQuitMenu(wxCommandEvent& evt) {
     evt.Skip();
 }
 
+mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, mcData* loan, const int vSize) {
+    // create frame to hold all children
+    mcChildFrame *loanFrm = new mcChildFrame(this, wxString(name) + " " + std::to_string(GetChildren().size()));
+
+    // create new mcBook to display the loan
+    mcBook *bk = new mcBook(loanFrm, wxID_ANY, wxPoint(445, 0), wxSize(830, vSize));
+    if(bk->load(loan)) {
+        // create text entry list
+        mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, wxID_EDIT, wxDefaultPosition, wxSize(400, vSize));
+        lsVw->AppendColumn("Field", wxLIST_FORMAT_LEFT, 150);
+        lsVw->AppendColumn("Value", wxLIST_FORMAT_LEFT, 150);
+        for(int i = 0; i < loan->GetDataEntryStrings().size(); i++) {
+            wxString s = loan->GetDataEntryStrings()[i];
+            lsVw->InsertItem(i, s);
+            lsVw->SetItem(i, 1, "");
+        }
+
+        // set up the sizer for the child frame
+        wxBoxSizer* lsVwSzr = new wxBoxSizer(wxHORIZONTAL);
+        lsVwSzr->Add(lsVw, 1, wxEXPAND);
+        lsVwSzr->Add(bk, 1, wxEXPAND);
+        
+        loanFrm->SetSizer(lsVwSzr);
+    }
+    return loanFrm;
+}

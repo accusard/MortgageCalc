@@ -8,7 +8,7 @@
 #ifndef mcType_h
 #define mcType_h
 
-const wxPoint POINT_MAC_BOOK_PRO = wxPoint(0,38);
-
+const wxPoint DEFAULT_POS_MBP = wxPoint(0,38);
+const int DEFAULT_VSIZE_LOAN_WIN = 685;
 
 #endif /* mcType_h */
