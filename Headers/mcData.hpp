@@ -14,9 +14,10 @@
 
 #include "IHashTableInterface.h"
 #include "IDataInterface.h"
-#include "Borrower.h"
+#include "QueryData.hpp"
+#include "mcAction.hpp"
 
-struct mcData : public IHashTableInterface, public IDataInterface {
+struct mcData : public IHashTableInterface, public IDataInterface<mcPrompt<float>> {
     mcData();
     virtual ~mcData() {}
     mcData(const float purchse, const float down, const int years, const float interestPerc);
@@ -48,7 +49,7 @@ public:
     std::vector<Borrower> Borrowers;
     
     virtual void makeHashTable(std::unordered_map<std::string, float>& hash) override;
-    virtual const vector<std::string> GetDataEntryStrings() override;
+    virtual std::vector<mcPrompt<float>> getEditableEntries() override;
     
     
 };

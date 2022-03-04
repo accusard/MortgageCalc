@@ -32,7 +32,7 @@ public:
     QueryToType(const string& txt, T& ref) : prTxt(txt), dataRef(ref) {}
     
     istream& prompt() {
-        cout << " " << prTxt;
+        cout << "Edit->" << prTxt << ": ";
         cin >> dataRef;
         return cin;
     }

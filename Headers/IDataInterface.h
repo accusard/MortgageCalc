@@ -8,9 +8,11 @@
 #ifndef IDataInterface_h
 #define IDataInterface_h
 
+
+template<class T>
 class IDataInterface {
 public:
-    virtual const std::vector<std::string> GetDataEntryStrings() = 0;
+    virtual std::vector<T> getEditableEntries() = 0;
 };
 
 #endif /* IDataInterface_h */

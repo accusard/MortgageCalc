@@ -34,7 +34,7 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DE
 mcMain::~mcMain() {}
 
 void mcMain::OnNewMenu(wxCommandEvent& evt) {
-    mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN);
+    mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, wxGetApp().NewMortgageData(nullptr));
     mrgLnWin->Show();
     
     evt.Skip();
@@ -53,9 +53,8 @@ void mcMain::OnOpenMenu(wxCommandEvent& evt) {
 }
 
 void mcMain::OnSaveMenu(wxCommandEvent& evt) {
-    mcData mData;
     mcFile file;
-    file.save(DATA_FILE_NAME.c_str(), mData);
+    file.save(DATA_FILE_NAME.c_str(), *wxGetApp().GetMortgageData());
 }
 
 void mcMain::OnQuitMenu(wxCommandEvent& evt) {
@@ -64,7 +63,7 @@ void mcMain::OnQuitMenu(wxCommandEvent& evt) {
     evt.Skip();
 }
 
-mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, mcData* loan, const int vSize) {
+mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, const int vSize,  mcData* loan) {
     // create frame to hold all children
     mcChildFrame *loanFrm = new mcChildFrame(this, wxString(name) + " " + std::to_string(GetChildren().size()));
 
@@ -75,8 +74,9 @@ mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, mcData* loa
         mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, wxID_EDIT, wxDefaultPosition, wxSize(400, vSize));
         lsVw->AppendColumn("Field", wxLIST_FORMAT_LEFT, 150);
         lsVw->AppendColumn("Value", wxLIST_FORMAT_LEFT, 150);
-        for(int i = 0; i < loan->GetDataEntryStrings().size(); i++) {
-            wxString s = loan->GetDataEntryStrings()[i];
+        for(int i = 0; i < loan->getEditableEntries().size(); i++) {
+            wxString s = loan->getEditableEntries()[i].getString();
+            loan->getEditableEntries()[i].execute();
             lsVw->InsertItem(i, s);
             lsVw->SetItem(i, 1, "");
         }

@@ -23,6 +23,7 @@ public:
     
     virtual bool OnInit();
     mcData* NewMortgageData(mcData* oldData);
+    mcData* GetMortgageData(const int index = -1);
 };
 
 DECLARE_APP(mcApp);

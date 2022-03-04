@@ -16,7 +16,7 @@ public:
     mcMain();
     ~mcMain();
     
-    class mcChildFrame* createMortgageLoanWindow(const wxString& name, struct mcData* loan, const int vSize);
+    class mcChildFrame* createMortgageLoanWindow(const wxString& name, const int vSize, struct mcData* loan);
     
 private:
     void OnNewMenu(wxCommandEvent& evt);

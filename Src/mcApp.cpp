@@ -41,3 +41,9 @@ mcData* mcApp::NewMortgageData(mcData *oldData) {
     return mAppData.back();
 }
 
+mcData* mcApp::GetMortgageData(const int index) {
+    if(index > -1)
+        return mAppData[index];
+    else
+        return mAppData.back();
+}

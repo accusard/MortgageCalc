@@ -10,8 +10,10 @@
 
 #include "wx/listctrl.h"
 
+
 class mcDataEntryList : public wxListView {
 public:
+//    mcDataEntryList(wxWindow* parent, const wxSize& size, std::vector<SinglePrompt<float>> editableEntry);
     mcDataEntryList(wxWindow *parent,
                     wxWindowID winid = wxID_ANY,
                     const wxPoint& pos = wxDefaultPosition,

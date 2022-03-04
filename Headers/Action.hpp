@@ -23,6 +23,22 @@ struct Action {
     virtual void execute() {}
 };
 
+template<class T>
+class SinglePrompt : public Action {
+public:
+    SinglePrompt(const string& prmpt, T& dataRef) : inquiry(prmpt), data(dataRef) {}
+    virtual void execute() {
+        QueryToType<T> q = QueryToType<T>(inquiry, data);
+        cin >> q;
+    }
+
+    const string& getString() const { return inquiry; }
+
+private:
+    string inquiry;
+    T& data;
+};
+
 class MortgageReport : public mcData, public Action {
 public:
     MortgageReport(mcData& dRef) : mcData(dRef) {}
@@ -80,20 +96,6 @@ private:
     vector<QueryToType<float>> inquiriesFloat;
     vector<QueryToType<int>> inquriesInt;
     vector<QueryToVector<Borrower>> inquiriesBorrower;
-};
-
-
-template<class T>
-class SinglePrompt : public Action {
-public:
-    SinglePrompt(const string& prmpt, T& dataRef) : inquiry(prmpt), data(dataRef) {}
-    virtual void execute() {
-        QueryToType<T> q = QueryToType<T>(inquiry, data);
-        cin >> q;
-    }
-private:
-    string inquiry;
-    T& data;
 };
 
 
