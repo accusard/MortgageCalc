@@ -34,7 +34,8 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DE
 mcMain::~mcMain() {}
 
 void mcMain::OnNewMenu(wxCommandEvent& evt) {
-    mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, wxGetApp().NewMortgageData(nullptr));
+    const int colmw = 150;
+    mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", colmw, DEFAULT_VSIZE_LOAN_WIN, wxGetApp().NewMortgageData(nullptr));
     mrgLnWin->Show();
     
     evt.Skip();
@@ -63,23 +64,13 @@ void mcMain::OnQuitMenu(wxCommandEvent& evt) {
     evt.Skip();
 }
 
-mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, const int vSize,  mcData* loan) {
-    // create frame to hold all children
+mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, const int verticalsize,  const int columnwidth, mcData* loan) {
     mcChildFrame *loanFrm = new mcChildFrame(this, wxString(name) + " " + std::to_string(GetChildren().size()));
 
     // create new mcBook to display the loan
-    mcBook *bk = new mcBook(loanFrm, wxID_ANY, wxPoint(445, 0), wxSize(830, vSize));
+    mcBook *bk = new mcBook(loanFrm, wxID_ANY, wxPoint(445, 0), wxSize(830, verticalsize));
     if(bk->load(loan)) {
-        // create text entry list
-        mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, wxID_EDIT, wxDefaultPosition, wxSize(400, vSize));
-        lsVw->AppendColumn("Field", wxLIST_FORMAT_LEFT, 150);
-        lsVw->AppendColumn("Value", wxLIST_FORMAT_LEFT, 150);
-        for(int i = 0; i < loan->getEditableEntries().size(); i++) {
-            wxString s = loan->getEditableEntries()[i].getString();
-            loan->getEditableEntries()[i].execute();
-            lsVw->InsertItem(i, s);
-            lsVw->SetItem(i, 1, "");
-        }
+        mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, wxID_EDIT, wxDefaultPosition, wxSize(400, verticalsize), columnwidth, loan);
 
         // set up the sizer for the child frame
         wxBoxSizer* lsVwSzr = new wxBoxSizer(wxHORIZONTAL);

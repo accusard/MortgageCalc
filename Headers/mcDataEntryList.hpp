@@ -9,7 +9,7 @@
 #define mcDataEntryList_hpp
 
 #include "wx/listctrl.h"
-
+#include "mcData.hpp"
 
 class mcDataEntryList : public wxListView {
 public:
@@ -17,8 +17,11 @@ public:
     mcDataEntryList(wxWindow *parent,
                     wxWindowID winid = wxID_ANY,
                     const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize);
+                    const wxSize& size = wxDefaultSize,
+                    const int columnwidth = 150,
+                    mcData* loan = nullptr);
     
+    void CreateEditbleFields(const std::vector<mcPrompt<float>>& editables, const int column);
     void OnClicked(wxListEvent& evt);
     wxDECLARE_EVENT_TABLE();
 };
