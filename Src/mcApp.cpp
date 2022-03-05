@@ -32,12 +32,7 @@ mcData* mcApp::NewMortgageData(mcData *oldData) {
     if(oldData != nullptr) {
         delete oldData;
     }
-    
     mAppData.push_back(new mcData());
-    
-    mcFile file;
-    file.save(DATA_FILE_NAME.c_str(), *mAppData.back());
-    
     return mAppData.back();
 }
 

@@ -15,7 +15,7 @@ void mcFile::save(const char* filename, mcData& data) {
     data.recalculateMortgage();
     data.makeHashTable(dataHash);
     
-    std::cout << "saving to " << filename << std::endl <<std:: endl;
+    std::cout << std::endl << "saving to " << filename << std::endl <<std::endl;
     std::ofstream ofile(filename, std::ios::out|std::ios::trunc);
     
     if(ofile.is_open()) {

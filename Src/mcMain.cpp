@@ -29,12 +29,21 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DE
     MenuFile->Append(wxID_EXIT, "Quit");
     mMenuBar->Append(MenuFile, "File");
     this->SetMenuBar(mMenuBar);
+    
+    const int colmw = 150;
+    mcFile datf;
+    mcData* mgdat = wxGetApp().NewMortgageData(nullptr);
+    if(datf.open(DATA_FILE_NAME.c_str(), *mgdat)) {
+        mcChildFrame *newWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, colmw, mgdat);
+        newWin->Show();
+    }
 }
 
 mcMain::~mcMain() {}
 
 void mcMain::OnNewMenu(wxCommandEvent& evt) {
     const int colmw = 150;
+    
     mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, colmw, wxGetApp().NewMortgageData(nullptr));
     mrgLnWin->Show();
     
