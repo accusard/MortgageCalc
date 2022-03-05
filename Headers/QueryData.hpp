@@ -17,7 +17,7 @@ class QueryToString {
 public:
     QueryToString(const string& txt) : prTxt(txt) {}
     virtual ~QueryToString() {}
-    virtual void prompt() {
+    virtual void commandPrompt() {
         cout << prTxt;
     }
     
@@ -31,7 +31,7 @@ class QueryToType  {
 public:
     QueryToType(const string& txt, T& ref) : prTxt(txt), dataRef(ref) {}
     
-    istream& prompt() {
+    istream& commandPrompt() {
         cout << "Edit->" << prTxt << ": ";
         cin >> dataRef;
         return cin;
@@ -52,7 +52,7 @@ class QueryToVector : public QueryToString {
 public:
     QueryToVector(const string& txt, vector<T>& vref) : QueryToString(txt), vectorRef(vref) {}
     
-    virtual void prompt() {
+    virtual void commandPrompt() {
         T data;
         cout << QueryToString::prTxt;
         cin >> data;

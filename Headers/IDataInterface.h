@@ -12,7 +12,7 @@
 template<class T>
 class IDataInterface {
 public:
-    virtual std::vector<T> getEditableEntries() = 0;
+    virtual std::vector<T> getFieldEntries() = 0;
 };
 
 #endif /* IDataInterface_h */

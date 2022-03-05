@@ -35,7 +35,7 @@ mcMain::~mcMain() {}
 
 void mcMain::OnNewMenu(wxCommandEvent& evt) {
     const int colmw = 150;
-    mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", colmw, DEFAULT_VSIZE_LOAN_WIN, wxGetApp().NewMortgageData(nullptr));
+    mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, colmw, wxGetApp().NewMortgageData(nullptr));
     mrgLnWin->Show();
     
     evt.Skip();
@@ -71,7 +71,7 @@ mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, const int v
     mcBook *bk = new mcBook(loanFrm, wxID_ANY, wxPoint(445, 0), wxSize(830, verticalsize));
     if(bk->load(loan)) {
         mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, wxID_EDIT, wxDefaultPosition, wxSize(400, verticalsize), columnwidth, loan);
-
+        
         // set up the sizer for the child frame
         wxBoxSizer* lsVwSzr = new wxBoxSizer(wxHORIZONTAL);
         lsVwSzr->Add(lsVw, 1, wxEXPAND);

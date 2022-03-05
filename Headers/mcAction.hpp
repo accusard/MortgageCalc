@@ -12,14 +12,14 @@
 struct mcAction {
     mcAction() {}
     virtual ~mcAction() {}
-    virtual void execute() {}
+    virtual void show() {}
 };
 
 template<class T>
 class mcPrompt : public mcAction {
 public:
     mcPrompt(const string& prmpt, T& dataRef) : mInquiry(prmpt), mData(dataRef) {}
-    virtual void execute() override {
+    virtual void show() override {
         QueryToType<T> q = QueryToType<T>(mInquiry, mData);
         cin >> q;
         cout << "Done." << endl;
@@ -35,19 +35,14 @@ protected:
 template<class T>
 class mcDialogPrompt : public mcPrompt<T> {
 public:
-    mcDialogPrompt(wxWindow* parent, const std::string& prompt, T& data) : mcPrompt<T>(prompt, data) {
-        QueryToType<T> qry = QueryToType<T>(prompt, data);
-        wxNumberEntryDialog* prmttext = new wxNumberEntryDialog(parent, "msg",
-                                                                "prmt",
-                                                                "cap",
-                                                                5000,
-                                                                0,
-                                                                10000000);
-        
-//        prmttext->ShowModal();
-        prmttext->GetValue();
-    }
+    mcDialogPrompt(const std::string& prompt, T& data) : mcPrompt<T>(prompt, data) {}
     
+    virtual void show() override {
+        wxNumberEntryDialog dlg;
+        dlg.Create(nullptr, "", this->mInquiry, "Enter New Value", this->mData, 0, 99999999);
+        if(dlg.ShowModal() == wxID_OK) this->mData = dlg.GetValue();
+        dlg.Destroy();
+    }
 };
 
 

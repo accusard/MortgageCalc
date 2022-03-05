@@ -21,23 +21,23 @@ mcDataEntryList::mcDataEntryList(wxWindow *parent,
                                  mcData* loan) : wxListView(parent, winid, pos, size) {
     AppendColumn("Field", wxLIST_FORMAT_LEFT, columnwidth);
     AppendColumn("Value", wxLIST_FORMAT_LEFT, columnwidth);
-    if(loan) CreateEditbleFields(loan->getEditableEntries(), 1);
+    bindFields(loan->getFieldEntries(), 1);
 }
 
-void mcDataEntryList::CreateEditbleFields(const std::vector<mcPrompt<float>>& editables, const int column) {
-    for(int i = 0; i < editables.size(); i++) {
-        wxString var = editables[i].getString();
-        wxString val = std::to_string(long(editables[i].getData()));
+void mcDataEntryList::bindFields(const std::vector<mcDialogPrompt<float>>& prompts, const int column) {
+    for(int i = 0; i < prompts.size(); i++) {
+        wxString var = prompts[i].getString();
+        wxString val = std::to_string(long(prompts[i].getData()));
         InsertItem(i, " " + var);
         SetItem(i, column, val);
     }
 }
 
 void mcDataEntryList::OnClicked(wxListEvent& evt) {
-    long itemdx = evt.GetCacheTo();
+    const int itmdx = (int)evt.GetCacheTo();
     mcData* data = wxGetApp().GetMortgageData();
-    mcPrompt<float> prmt = data->getEditableEntries()[itemdx];
-    prmt.execute();
+    mcDialogPrompt<float> prmt = data->getFieldEntry(itmdx);
+    prmt.show();
     wxString str = std::to_string((long)prmt.getData());
-    SetItem(itemdx, 1, str);
+    SetItem(itmdx, 1, str);
 }

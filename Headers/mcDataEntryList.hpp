@@ -13,7 +13,6 @@
 
 class mcDataEntryList : public wxListView {
 public:
-//    mcDataEntryList(wxWindow* parent, const wxSize& size, std::vector<SinglePrompt<float>> editableEntry);
     mcDataEntryList(wxWindow *parent,
                     wxWindowID winid = wxID_ANY,
                     const wxPoint& pos = wxDefaultPosition,
@@ -21,9 +20,12 @@ public:
                     const int columnwidth = 150,
                     mcData* loan = nullptr);
     
-    void CreateEditbleFields(const std::vector<mcPrompt<float>>& editables, const int column);
+    void bindFields(const std::vector<mcDialogPrompt<float>>& prompts, const int column);
     void OnClicked(wxListEvent& evt);
     wxDECLARE_EVENT_TABLE();
+    
+private:
+    
 };
 
 #endif /* mcDataEntryList_hpp */

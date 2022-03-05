@@ -52,7 +52,7 @@ istream& operator>>(istream& cin, Name& name) {
 }
 
 istream& operator>>(istream& cin, QueryToType<float>& q) {
-    while(!q.prompt().good()) {
+    while(!q.commandPrompt().good()) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
@@ -60,7 +60,7 @@ istream& operator>>(istream& cin, QueryToType<float>& q) {
 }
 
 istream& operator>>(istream& cin, QueryToType<int>& q) {
-    while(!q.prompt().good()) {
+    while(!q.commandPrompt().good()) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }

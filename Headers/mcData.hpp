@@ -17,7 +17,7 @@
 #include "QueryData.hpp"
 #include "mcAction.hpp"
 
-struct mcData : public IHashTableInterface, public IDataInterface<mcPrompt<float>> {
+struct mcData : public IHashTableInterface, public IDataInterface<mcDialogPrompt<float>> {
     mcData();
     virtual ~mcData() {}
     mcData(const float purchse, const float down, const int years, const float interestPerc);
@@ -49,7 +49,8 @@ public:
     std::vector<Borrower> Borrowers;
     
     virtual void makeHashTable(std::unordered_map<std::string, float>& hash) override;
-    virtual std::vector<mcPrompt<float>> getEditableEntries() override;
+    virtual std::vector<mcDialogPrompt<float>> getFieldEntries() override;
+    mcDialogPrompt<float> getFieldEntry(const int index);
     
     
 };

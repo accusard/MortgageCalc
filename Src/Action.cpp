@@ -32,7 +32,7 @@ void SequencePrompts::execute() {
         cin >> inquriesInt[i];
     
    for(int i = 0; i < inquiriesBorrower.size(); i++)
-        inquiriesBorrower[i].prompt();
+        inquiriesBorrower[i].commandPrompt();
    
    recalculateMortgage();
 }
