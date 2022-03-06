@@ -10,12 +10,18 @@
 #include "mcData.hpp"
 
 mcBook::mcBook(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& sz) : wxNotebook(parent, id, pos, sz) {
-    
+    mOverview = new wxListView(this, wxID_ANY, wxDefaultPosition, GetSize(), wxLC_LIST);
+    mReport = new wxListView(this, wxID_ANY, wxDefaultPosition, GetSize(), wxLC_LIST);
+    mSchedule = new wxListView(this, wxID_ANY, wxDefaultPosition, GetSize(), wxLC_LIST);
+    AddPage(mOverview, "Overview");
+    AddPage(mReport, "Mortgage Report");
+    AddPage(mSchedule, "Scheduled Payments");
 }
 
-const bool mcBook::load(mcData* data) {
+const bool mcBook::update(mcData* data) {
+    cout << "mcBook::update" << endl;
     if(data != nullptr) {
-        wxListView* ovrview = new wxListView(this, wxID_ANY, wxDefaultPosition, GetSize(), wxLC_LIST);
+        data->recalculateMortgage();
         wxString loan_str = wxString("Loan Amount: " + std::to_string((long)data->loanAmount));
         wxString int_str = wxString("Interest Percent: " + std::to_string((long)data->percentInterest) + "%");
         wxString term_str = wxString("Terms: " + std::to_string((long)data->termYears) + " years");
@@ -25,22 +31,23 @@ const bool mcBook::load(mcData* data) {
 //        cout << "Homeowners Insurance: " << mCalculator::getHomeOwnersInsurancePremium(purchasePrice) << endl;
 //        cout << "Private Mortgage Insurance: " << mCalculator::getPrivateMortgageInsurance(loanAmount) << endl << endl;
 //        cout << "Total Mortgage Payments: " << mCalculator::getMonthlyPayments(purchasePrice, loanAmount, termYears, percentInterest) << endl << endl;
+        mOverview->ClearAll();
+        mReport->ClearAll();
+        mSchedule->ClearAll();
         
-        ovrview->InsertItem(0, loan_str);
-        ovrview->InsertItem(1, int_str);
-        ovrview->InsertItem(2, term_str);
-        AddPage(ovrview, "Overview");
+        mOverview->InsertItem(0, loan_str);
+        mOverview->InsertItem(1, int_str);
+        mOverview->InsertItem(2, term_str);
+//        AddPage(mOverview, "Overview");
         
-        wxListView* mrtgrpt = new wxListView(this, wxID_ANY, wxDefaultPosition, GetSize(), wxLC_LIST);
-        mrtgrpt->InsertItem(1, "Here be more dragons!");
-        AddPage(mrtgrpt, "Mortgage Report");
+//        wxListView* mReport = new wxListView(this, wxID_ANY, wxDefaultPosition, GetSize(), wxLC_LIST);
+        mReport->InsertItem(1, "Here be more dragons!");
+//        AddPage(mReport, "Mortgage Report");
         
-        wxListView* sch = new wxListView(this, wxID_ANY, wxDefaultPosition, GetSize(), wxLC_LIST);
-        sch->InsertItem(1, "Here be great dragons!");
-        AddPage(sch, "Scheduled Payments");
+//        wxListView* mSchedule = new wxListView(this, wxID_ANY, wxDefaultPosition, GetSize(), wxLC_LIST);
+        mSchedule->InsertItem(1, "Here be great dragons!");
+//        AddPage(mSchedule, "Scheduled Payments");
         return true;
     }
     return false;
 }
-
-//void mcBook::bind(

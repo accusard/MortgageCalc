@@ -9,12 +9,21 @@
 #define mcBook_hpp
 
 #include "wx/notebook.h"
+#include "DataInterface.h"
 
-class mcBook : public wxNotebook {
-private:
+struct mcData;
+class wxListView;
+
+class mcBook : public wxNotebook, public IDataInterface<mcData> {
+
 public:
     mcBook(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& sz);
-    const bool load(struct mcData* data);
+    virtual const bool update(struct mcData* data) override;
+    
+private:
+    wxListView* mOverview = nullptr;
+    wxListView* mReport = nullptr;
+    wxListView* mSchedule = nullptr;
 };
 
 #endif /* mcBook_hpp */

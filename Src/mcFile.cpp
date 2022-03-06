@@ -15,7 +15,7 @@ void mcFile::save(const char* filename, mcData& data) {
     data.recalculateMortgage();
     data.makeHashTable(dataHash);
     
-    std::cout << std::endl << "saving to " << filename << std::endl <<std::endl;
+    std::cout << ">>saving to " << filename << std::endl;
     std::ofstream ofile(filename, std::ios::out|std::ios::trunc);
     
     if(ofile.is_open()) {
@@ -32,7 +32,7 @@ const bool mcFile::open(const char* filename, mcData& data) {
     data.makeHashTable(dataHash);
     ifstream ifile(filename, std::ios::in);
     if(ifile.is_open()) {
-        std::cout << "opening from " << filename << std::endl << std::endl;
+        std::cout << ">>opening from " << filename << std::endl;
         std::ifstream ifile(filename, std::ios::in);
         
         // read each line 1 by 1 and add to variable

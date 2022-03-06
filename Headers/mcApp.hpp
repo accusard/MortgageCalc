@@ -22,8 +22,10 @@ public:
     ~mcApp();
     
     virtual bool OnInit();
-    mcData* NewMortgageData(mcData* oldData);
+    mcData* NewMortgageData(const mcData& oldData);
     mcData* GetMortgageData(const int index = -1);
+    class mcBook* GetLoanBook = nullptr;
+    class mcDataEntryList* GetEntryList = nullptr;
 };
 
 DECLARE_APP(mcApp);

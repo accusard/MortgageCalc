@@ -30,11 +30,12 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DE
     mMenuBar->Append(MenuFile, "File");
     this->SetMenuBar(mMenuBar);
     
-    const int colmw = 150;
-    mcFile datf;
-    mcData* mgdat = wxGetApp().NewMortgageData(nullptr);
-    if(datf.open(DATA_FILE_NAME.c_str(), *mgdat)) {
-        mcChildFrame *newWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, colmw, mgdat);
+//    const int colmw = 150;
+    mcFile datfile;
+    mcData data;
+    if(datfile.open(DATA_FILE_NAME.c_str(), data)) {
+        mcData* mgdata = wxGetApp().NewMortgageData(data);
+        mcChildFrame *newWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, DEFAULT_COLUMN_WIDTH, mgdata);
         newWin->Show();
     }
 }
@@ -42,9 +43,9 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DE
 mcMain::~mcMain() {}
 
 void mcMain::OnNewMenu(wxCommandEvent& evt) {
-    const int colmw = 150;
-    
-    mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, colmw, wxGetApp().NewMortgageData(nullptr));
+//    const int colmw = DEFAULT_COLUMN_WIDTH;
+    mcData newdata;
+    mcChildFrame *mrgLnWin = createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, DEFAULT_COLUMN_WIDTH, wxGetApp().NewMortgageData(newdata));
     mrgLnWin->Show();
     
     evt.Skip();
@@ -56,8 +57,10 @@ void mcMain::OnOpenMenu(wxCommandEvent& evt) {
     if(fDialog->ShowModal() == wxID_OK) {
         mcData mData;
         mcFile file;
-        wxString selected = fDialog->GetPath();
-        file.open(selected.c_str(), mData);
+
+        if(file.open(fDialog->GetPath().c_str(), mData)) {
+            createMortgageLoanWindow("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, DEFAULT_COLUMN_WIDTH, wxGetApp().NewMortgageData(mData))->Show();
+        }
     }
     fDialog->Destroy();
 }
@@ -75,11 +78,15 @@ void mcMain::OnQuitMenu(wxCommandEvent& evt) {
 
 mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, const int verticalsize,  const int columnwidth, mcData* loan) {
     mcChildFrame *loanFrm = new mcChildFrame(this, wxString(name) + " " + std::to_string(GetChildren().size()));
-
+    wxGetApp().SetTopWindow(loanFrm);
+    
     // create new mcBook to display the loan
-    mcBook *bk = new mcBook(loanFrm, wxID_ANY, wxPoint(445, 0), wxSize(830, verticalsize));
-    if(bk->load(loan)) {
-        mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, wxID_EDIT, wxDefaultPosition, wxSize(400, verticalsize), columnwidth, loan);
+    mcBook *bk = new mcBook(loanFrm, mcID_MORTGAGE_LOANBOOK, wxPoint(445, 0), wxSize(830, verticalsize));
+    wxGetApp().GetLoanBook = bk;
+    
+    if(bk->update(loan)) {
+        mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, mcID_EDITABLE_LIST, wxDefaultPosition, wxSize(400, verticalsize), columnwidth, loan);
+        wxGetApp().GetEntryList = lsVw;
         
         // set up the sizer for the child frame
         wxBoxSizer* lsVwSzr = new wxBoxSizer(wxHORIZONTAL);

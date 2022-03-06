@@ -13,11 +13,11 @@
 
 
 #include "IHashTableInterface.h"
-#include "IDataInterface.h"
+#include "FieldEntriesInterface.h"
 #include "QueryData.hpp"
 #include "mcAction.hpp"
 
-struct mcData : public IHashTableInterface, public IDataInterface<mcDialogPrompt<float>> {
+struct mcData : public IHashTableInterface, public IFieldEntriesInterface<mcDialogPrompt<float>> {
     mcData();
     virtual ~mcData() {}
     mcData(const float purchse, const float down, const int years, const float interestPerc);

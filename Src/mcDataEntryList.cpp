@@ -7,10 +7,12 @@
 
 #include "mcDataEntryList.hpp"
 #include "mcApp.hpp"
-
+#include "mcBook.hpp"
+#include "mcType.h"
 
 wxBEGIN_EVENT_TABLE(mcDataEntryList, wxListView)
-EVT_LIST_ITEM_SELECTED(wxID_EDIT, mcDataEntryList::OnClicked)
+EVT_LIST_ITEM_SELECTED(mcID_EDITABLE_LIST, mcDataEntryList::OnClicked)
+EVT_LIST_ITEM_DESELECTED(mcID_EDITABLE_LIST, mcDataEntryList::OnFieldChanged)
 wxEND_EVENT_TABLE()
 
 mcDataEntryList::mcDataEntryList(wxWindow *parent,
@@ -33,6 +35,11 @@ void mcDataEntryList::bindFields(const std::vector<mcDialogPrompt<float>>& promp
     }
 }
 
+const bool mcDataEntryList::update(mcData* data) {
+    cout << "mcDataEntryList::update" << endl;
+    return true;
+}
+
 void mcDataEntryList::OnClicked(wxListEvent& evt) {
     const int itmdx = (int)evt.GetCacheTo();
     mcData* data = wxGetApp().GetMortgageData();
@@ -40,4 +47,14 @@ void mcDataEntryList::OnClicked(wxListEvent& evt) {
     prmt.show();
     wxString str = std::to_string((long)prmt.getData());
     SetItem(itmdx, 1, str);
+    Select(itmdx,false);
+    
+    evt.SetClientData(data);
+    evt.Skip();
+}
+
+void mcDataEntryList::OnFieldChanged(wxListEvent& evt) {
+    wxGetApp().GetLoanBook->update(wxGetApp().GetMortgageData());
+    wxGetApp().GetEntryList->update(wxGetApp().GetMortgageData());
+    std::cout << ">>Field Changed" << std::endl;
 }
