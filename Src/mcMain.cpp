@@ -12,6 +12,7 @@
 #include "mcData.hpp"
 #include "mcType.h"
 #include "mcDataEntryList.hpp"
+#include "mcSlider.hpp"
 
 wxBEGIN_EVENT_TABLE(mcMain, wxMDIParentFrame)
 EVT_MENU(wxID_NEW, mcMain::OnNewMenu)
@@ -76,6 +77,10 @@ void mcMain::OnQuitMenu(wxCommandEvent& evt) {
     evt.Skip();
 }
 
+void mcMain::OnScroll(wxScrollEvent& evt) {
+    
+}
+
 mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, const int verticalsize,  const int columnwidth, mcData* loan) {
     mcChildFrame *loanFrm = new mcChildFrame(this, wxString(name) + " " + std::to_string(GetChildren().size()));
     wxGetApp().SetTopWindow(loanFrm);
@@ -85,8 +90,14 @@ mcChildFrame* mcMain::createMortgageLoanWindow(const wxString& name, const int v
     wxGetApp().GetLoanBook = bk;
     
     if(bk->update(loan)) {
+        // create data entry list panel
         mcDataEntryList* lsVw = new mcDataEntryList(loanFrm, mcID_EDITABLE_LIST, wxDefaultPosition, wxSize(400, verticalsize), columnwidth, loan);
         wxGetApp().GetEntryList = lsVw;
+        
+        // create sliders
+        slider = new wxSlider(loanFrm, mcID_SLIDER, 0, 0, 140, wxPoint(50, 30),
+                              wxSize(140, -1), wxSL_HORIZONTAL);
+        Connect(mcID_SLIDER, wxEVT_COMMAND_SLIDER_UPDATED, wxScrollEventHandler(mcMain::OnScroll));
         
         // set up the sizer for the child frame
         wxBoxSizer* lsVwSzr = new wxBoxSizer(wxHORIZONTAL);

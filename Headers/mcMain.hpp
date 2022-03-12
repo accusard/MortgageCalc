@@ -24,7 +24,10 @@ private:
     void OnSaveMenu(wxCommandEvent& evt);
     void OnQuitMenu(wxCommandEvent& evt);
     
+    void OnScroll(wxScrollEvent& evt);
+    
     wxMenuBar *mMenuBar = nullptr;
+    class wxSlider* slider = nullptr;
     
     wxDECLARE_EVENT_TABLE();
 };
