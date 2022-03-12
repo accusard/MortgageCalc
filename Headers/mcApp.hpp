@@ -15,7 +15,7 @@ class mcApp : public wxApp {
     
 private:
     std::vector<mcData*> mAppData;
-    class mcMain* frame1 = nullptr;
+    class mcMain* main = nullptr;
     
 public:
     mcApp() {}
@@ -24,8 +24,6 @@ public:
     virtual bool OnInit();
     mcData* NewMortgageData(const mcData& oldData);
     mcData* GetMortgageData(const int index = -1);
-    class mcBook* GetLoanBook = nullptr;
-    class mcDataEntryList* GetEntryList = nullptr;
 };
 
 DECLARE_APP(mcApp);

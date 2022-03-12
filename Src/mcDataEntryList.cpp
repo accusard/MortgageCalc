@@ -12,7 +12,6 @@
 
 wxBEGIN_EVENT_TABLE(mcDataEntryList, wxListView)
 EVT_LIST_ITEM_SELECTED(mcID_EDITABLE_LIST, mcDataEntryList::OnClicked)
-EVT_LIST_ITEM_DESELECTED(mcID_EDITABLE_LIST, mcDataEntryList::OnFieldChanged)
 wxEND_EVENT_TABLE()
 
 mcDataEntryList::mcDataEntryList(wxWindow *parent,
@@ -28,6 +27,7 @@ mcDataEntryList::mcDataEntryList(wxWindow *parent,
 
 void mcDataEntryList::bindFields(const std::vector<mcDialogPrompt<float>>& prompts, const int column) {
     for(int i = 0; i < prompts.size(); i++) {
+        // bind the data to field
         wxString var = prompts[i].getString();
         wxString val = std::to_string(long(prompts[i].getData()));
         InsertItem(i, " " + var);
@@ -51,10 +51,4 @@ void mcDataEntryList::OnClicked(wxListEvent& evt) {
     
     evt.SetClientData(data);
     evt.Skip();
-}
-
-void mcDataEntryList::OnFieldChanged(wxListEvent& evt) {
-    wxGetApp().GetLoanBook->update(wxGetApp().GetMortgageData());
-    wxGetApp().GetEntryList->update(wxGetApp().GetMortgageData());
-    std::cout << ">>Field Changed" << std::endl;
 }

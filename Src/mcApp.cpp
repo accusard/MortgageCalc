@@ -26,15 +26,12 @@ mcApp::~mcApp() {
 
 bool mcApp::OnInit() {
     // init window
-    frame1 = new mcMain();
+    main = new mcMain();
     return true;
 }
 
 mcData* mcApp::NewMortgageData(const mcData& oldData) {
-//    if(oldData != nullptr) {
-        mAppData.push_back(new mcData(oldData));
-//    }
-//    mAppData.push_back(new mcData());
+    mAppData.push_back(new mcData(oldData));
     return mAppData.back();
 }
 
@@ -44,10 +41,3 @@ mcData* mcApp::GetMortgageData(const int index) {
     else
         return mAppData.back();
 }
-
-//mcBook* mcApp::GetLoanBook() const {
-//    mcBook* bk = nullptr;
-//    if(GetTopWindow())
-//        bk = (mcBook*)(wxGetApp().GetTopWindow()->FindWindow(mcID_MORTGAGE_LOANBOOK));
-//    return bk;
-//}

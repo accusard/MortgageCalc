@@ -25,11 +25,10 @@ public:
     virtual const bool update(mcData* data) override;
     
     void OnClicked(wxListEvent& evt);
-    void OnFieldChanged(wxListEvent& evt);
     wxDECLARE_EVENT_TABLE();
     
 private:
-    
+    std::vector<wxSlider*> mSliders;
 };
 
 #endif /* mcDataEntryList_hpp */
