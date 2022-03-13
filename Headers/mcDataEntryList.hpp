@@ -22,13 +22,15 @@ public:
                     mcData* loan = nullptr);
     
     void bindFields(const std::vector<mcDialogPrompt<float>>& prompts, const int column);
+    void bindFields(const mcDialogPrompt<float>& prompt, const int row, const int column);
+    
     virtual const bool update(mcData* data) override;
     
     void OnClicked(wxListEvent& evt);
     wxDECLARE_EVENT_TABLE();
     
 private:
-    std::vector<wxSlider*> mSliders;
+//    std::vector<wxSlider*> mSliders;
 };
 
 #endif /* mcDataEntryList_hpp */

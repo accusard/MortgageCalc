@@ -93,10 +93,10 @@ void mcData::makeHashTable(std::unordered_map<std::string, float>& hash) {
 
 vector<mcDialogPrompt<float>> mcData::getFieldEntries() {
     vector<mcDialogPrompt<float>> entrylist;
-    entrylist.push_back(mcDialogPrompt<float>("Purchase Price", purchasePrice));
-    entrylist.push_back(mcDialogPrompt<float>("Downpayment", downpayment));
-    entrylist.push_back(mcDialogPrompt<float>("Years", termYears));
-    entrylist.push_back(mcDialogPrompt<float>("Interest", percentInterest));
+    entrylist.push_back(mcDialogPrompt<float>("Purchase Price", purchasePrice, MAX_DOLLAR_AMOUNT));
+    entrylist.push_back(mcDialogPrompt<float>("Interest", percentInterest, 100));
+    entrylist.push_back(mcDialogPrompt<float>("Downpayment", downpayment, MAX_DOLLAR_AMOUNT));
+    entrylist.push_back(mcDialogPrompt<float>("Years", termYears, 45));
     return entrylist;
 }
 

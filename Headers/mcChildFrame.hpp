@@ -10,17 +10,25 @@
 
 #include "wx/mdi.h"
 
-
-
-
 class mcChildFrame : public wxMDIChildFrame {
-public:
-    mcChildFrame(wxMDIParentFrame* parent, const wxString& name);
-    ~mcChildFrame();
-    
-    
 private:
+        class mcDataEntryList* mDataList = nullptr;
+        class mcBook* mDataBook = nullptr;
+        std::vector<wxSlider*> mSliders;
     
+public:
+    mcChildFrame(wxMDIParentFrame* parent, const wxString& name, const int verticalsize,  const int columnwidth, struct mcData* loan);
+    ~mcChildFrame();
+
+    wxSlider* Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, int current, int minimum, uint maximum);
+    
+    class mcDataEntryList* GetList() { return mDataList; }
+    class mcBook* GetBook() { return mDataBook; }
+    
+    void OnFieldChanged(class wxListEvent& evt);
+    void OnScroll(wxScrollEvent& evt);
+    wxDECLARE_EVENT_TABLE();
+
 
 };
 

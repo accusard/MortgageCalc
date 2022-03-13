@@ -18,7 +18,7 @@ EVT_MENU(wxID_NEW, mcMain::OnNewMenu)
 EVT_MENU(wxID_OPEN, mcMain::OnOpenMenu)
 EVT_MENU(wxID_SAVE, mcMain::OnSaveMenu)
 EVT_MENU(wxID_EXIT, mcMain::OnQuitMenu)
-EVT_LIST_ITEM_DESELECTED(mcID_EDITABLE_LIST, mcMain::OnFieldChanged)
+//EVT_LIST_ITEM_DESELECTED(mcID_EDITABLE_LIST, mcMain::OnFieldChanged)
 wxEND_EVENT_TABLE()
 
 mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DEFAULT_POS_MBP, wxSize(1280,720)) {
@@ -31,7 +31,6 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DE
     mMenuBar->Append(MenuFile, "File");
     this->SetMenuBar(mMenuBar);
     
-//    const int colmw = 150;
     mcFile datfile;
     mcData data;
     if(datfile.open(DATA_FILE_NAME.c_str(), data)) {
@@ -76,38 +75,23 @@ void mcMain::OnQuitMenu(wxCommandEvent& evt) {
     evt.Skip();
 }
 
-void mcMain::OnScroll(wxScrollEvent& evt) {
-    
-}
-
 mcChildFrame* mcMain::Create(const wxString& name, const int verticalsize,  const int columnwidth, mcData* loan) {
-    mcChildFrame *loanFrm = new mcChildFrame(this, wxString(name) + " " + std::to_string(GetChildren().size()));
+    mcChildFrame *loanFrm = new mcChildFrame(this,
+                                             wxString(name) + " " + std::to_string(GetChildren().size()),
+                                             verticalsize, columnwidth, loan);
     wxGetApp().SetTopWindow(loanFrm);
-    
-    // create new mcBook to display the loan
-    mDataBook = new mcBook(loanFrm, mcID_MORTGAGE_LOANBOOK, wxPoint(445, 0), wxSize(830, verticalsize));
-    
-    if(mDataBook->update(loan)) {
-        // create data entry list panel
-        mDataList = new mcDataEntryList(loanFrm, mcID_EDITABLE_LIST, wxDefaultPosition, wxSize(400, verticalsize), columnwidth, loan);
-        
-        // set up the sizer for the child frame
-        wxBoxSizer* lsVwSzr = new wxBoxSizer(wxHORIZONTAL);
-        lsVwSzr->Add(mDataList, 1, wxEXPAND);
-        lsVwSzr->Add(mDataBook, 1, wxEXPAND);
-        loanFrm->SetSizer(lsVwSzr);
-    }
+
     return loanFrm;
 }
 
-wxSlider* mcMain::Create(wxWindow *parent, wxWindowID id, int current, int minimum, uint maximum) {
-    wxSlider* sldr = new wxSlider(parent, id, current, minimum, maximum, wxPoint(50, 30),
-                                    wxSize(140, -1), wxSL_HORIZONTAL);
-              Connect(mcID_SLIDER, wxEVT_COMMAND_SLIDER_UPDATED, wxScrollEventHandler(mcMain::OnScroll));
-    
-    
-    return sldr;
-}
+//wxSlider* mcMain::Create(wxWindow *parent, wxWindowID id, int current, int minimum, uint maximum) {
+//    wxSlider* sldr = new wxSlider(parent, id, current, minimum, maximum, wxPoint(50, 30),
+//                                    wxSize(140, -1), wxSL_HORIZONTAL);
+//              Connect(mcID_SLIDER, wxEVT_COMMAND_SLIDER_UPDATED, wxScrollEventHandler(mcMain::OnScroll));
+//
+//
+//    return sldr;
+//}
 
 void mcMain::SizeFrame(wxWindow* frame, vector<wxControl*>& controls, const wxOrientation orient, const wxStretch stretch) {
     wxBoxSizer* szr = new wxBoxSizer(orient);
@@ -119,8 +103,12 @@ void mcMain::SizeFrame(wxWindow* frame, vector<wxControl*>& controls, const wxOr
     frame->SetSizer(szr);
 }
 
-void mcMain::OnFieldChanged(wxListEvent& evt) {
-    mDataList->update(wxGetApp().GetMortgageData());
-    mDataBook->update(wxGetApp().GetMortgageData());
-    std::cout << ">>Field Changed" << std::endl;
-}
+//void mcMain::OnFieldChanged(wxListEvent& evt) {
+//    mDataList->update(wxGetApp().GetMortgageData());
+//    mDataBook->update(wxGetApp().GetMortgageData());
+//    std::cout << ">>Field Changed" << std::endl;
+//}
+//
+//void mcMain::OnScroll(wxScrollEvent& evt) {
+//    
+//}
