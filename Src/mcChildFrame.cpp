@@ -29,20 +29,18 @@ mcChildFrame::mcChildFrame(wxMDIParentFrame* parent, const wxString& name, const
         lsVwSzr->Add(mDataBook, 1, wxEXPAND);
         SetSizer(lsVwSzr);
     }
+    
     std::vector<mcDialogPrompt<float>> prompts = loan->getFieldEntries();
     for(int i = 0; i < prompts.size(); i++) {
         mDataList->bindFields(prompts[i], i, 1);
-        
         wxPoint pos = wxPoint(columnwidth*2, (i+1) * GetFont().GetPixelSize().y);
-        wxSlider* sld = Create(this, mcID_SLIDER+i, pos, prompts[i].getData(), 0, prompts[i].getMax());
-        
-        mSliders.push_back(sld);
+        mSliders.push_back(MakeSlider(this, mcID_SLIDER+i, pos, prompts[i].getData(), 0, prompts[i].getMax()));
     }
 }
 
 mcChildFrame::~mcChildFrame() {}
 
-wxSlider* mcChildFrame::Create(wxWindow *parent, wxWindowID id, const wxPoint& pos, int current, int minimum, uint maximum) {
+wxSlider* mcChildFrame::MakeSlider(wxWindow *parent, wxWindowID id, const wxPoint& pos, int current, int minimum, uint maximum) {
     wxSlider* sldr = new wxSlider(parent, id, current, minimum, maximum,
                                   pos, wxSize(140, -1), wxSL_HORIZONTAL);
     

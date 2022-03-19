@@ -19,7 +19,7 @@ mcBook::mcBook(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize
 }
 
 const bool mcBook::update(mcData* data) {
-    cout << "mcBook::update" << endl;
+//    cout << "mcBook::update" << endl;
     if(data != nullptr) {
         data->recalculateMortgage();
         wxString loan_str = wxString("Loan Amount: " + std::to_string((long)data->loanAmount));

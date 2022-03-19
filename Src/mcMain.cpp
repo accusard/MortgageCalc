@@ -18,10 +18,9 @@ EVT_MENU(wxID_NEW, mcMain::OnNewMenu)
 EVT_MENU(wxID_OPEN, mcMain::OnOpenMenu)
 EVT_MENU(wxID_SAVE, mcMain::OnSaveMenu)
 EVT_MENU(wxID_EXIT, mcMain::OnQuitMenu)
-//EVT_LIST_ITEM_DESELECTED(mcID_EDITABLE_LIST, mcMain::OnFieldChanged)
 wxEND_EVENT_TABLE()
 
-mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DEFAULT_POS_MBP, wxSize(1280,720)) {
+mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, DEFAULT_WINDOW_NAME, DEFAULT_POS_MBP, wxSize(1280,720)) {
     mMenuBar = new wxMenuBar();
     wxMenu *MenuFile = new wxMenu();
     MenuFile->Append(wxID_NEW, "&New\tCtrl+N");
@@ -35,8 +34,8 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, "Mortgage Calculator", DE
     mcData data;
     if(datfile.open(DATA_FILE_NAME.c_str(), data)) {
         mcData* mgdata = wxGetApp().NewMortgageData(data);
-        mcChildFrame *newWin = Create("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, DEFAULT_COLUMN_WIDTH, mgdata);
-        newWin->Show();
+        wxMDIChildFrame *frm = Create(DEFAULT_WINDOW_NAME, DEFAULT_VSIZE_LOAN_WIN, DEFAULT_COLUMN_WIDTH, mgdata);
+        frm->Show();
     }
 }
 
@@ -44,29 +43,33 @@ mcMain::~mcMain() {}
 
 void mcMain::OnNewMenu(wxCommandEvent& evt) {
     mcData newdata;
-    mcChildFrame *mrgLnWin = Create("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, DEFAULT_COLUMN_WIDTH, wxGetApp().NewMortgageData(newdata));
-    mrgLnWin->Show();
+
+    wxMDIChildFrame *newWin = Create("New " + DEFAULT_WINDOW_NAME, DEFAULT_VSIZE_LOAN_WIN, DEFAULT_COLUMN_WIDTH, wxGetApp().NewMortgageData(newdata));
+    newWin->Show();
     
     evt.Skip();
 }
 
 void mcMain::OnOpenMenu(wxCommandEvent& evt) {
     // do dialog
-    wxFileDialog* fDialog = new wxFileDialog(this);
+    wxFileDialog* fDialog = new wxFileDialog(this,"","","",".bin Files (*.bin)|*.bin", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if(fDialog->ShowModal() == wxID_OK) {
         mcData mData;
         mcFile file;
 
         if(file.open(fDialog->GetPath().c_str(), mData)) {
-            Create("Mortgage Loan", DEFAULT_VSIZE_LOAN_WIN, DEFAULT_COLUMN_WIDTH, wxGetApp().NewMortgageData(mData))->Show();
+            Create(DEFAULT_WINDOW_NAME, DEFAULT_VSIZE_LOAN_WIN, DEFAULT_COLUMN_WIDTH, wxGetApp().GetMortgageData())->Show();
         }
     }
     fDialog->Destroy();
 }
 
 void mcMain::OnSaveMenu(wxCommandEvent& evt) {
-    mcFile file;
-    file.save(DATA_FILE_NAME.c_str(), *wxGetApp().GetMortgageData());
+    if(wxWindow* activeWin = GetActiveChild()) {
+        mcFile file;
+        file.save(DATA_FILE_NAME.c_str(), *wxGetApp().GetMortgageData());
+        activeWin->SetLabel(DEFAULT_WINDOW_NAME);
+    }
 }
 
 void mcMain::OnQuitMenu(wxCommandEvent& evt) {
@@ -75,40 +78,12 @@ void mcMain::OnQuitMenu(wxCommandEvent& evt) {
     evt.Skip();
 }
 
-mcChildFrame* mcMain::Create(const wxString& name, const int verticalsize,  const int columnwidth, mcData* loan) {
-    mcChildFrame *loanFrm = new mcChildFrame(this,
-                                             wxString(name) + " " + std::to_string(GetChildren().size()),
-                                             verticalsize, columnwidth, loan);
-    wxGetApp().SetTopWindow(loanFrm);
-
-    return loanFrm;
-}
-
-//wxSlider* mcMain::Create(wxWindow *parent, wxWindowID id, int current, int minimum, uint maximum) {
-//    wxSlider* sldr = new wxSlider(parent, id, current, minimum, maximum, wxPoint(50, 30),
-//                                    wxSize(140, -1), wxSL_HORIZONTAL);
-//              Connect(mcID_SLIDER, wxEVT_COMMAND_SLIDER_UPDATED, wxScrollEventHandler(mcMain::OnScroll));
-//
-//
-//    return sldr;
-//}
-
-void mcMain::SizeFrame(wxWindow* frame, vector<wxControl*>& controls, const wxOrientation orient, const wxStretch stretch) {
-    wxBoxSizer* szr = new wxBoxSizer(orient);
-    for(wxControl* ctlr : controls)
-    {
-        szr->Add(ctlr, 1, stretch);
-        szr->Add(ctlr, 1, stretch);
+wxMDIChildFrame* mcMain::Create(const wxString& name, const int verticalsize,  const int columnwidth, mcData* loan) {
+    if(wxWindow* active = GetActiveChild()) {
+        active->Close();
+        
     }
-    frame->SetSizer(szr);
+    mcChildFrame *frm = new mcChildFrame(this, name, verticalsize, columnwidth, loan);
+    wxGetApp().SetTopWindow(frm);
+    return frm;
 }
-
-//void mcMain::OnFieldChanged(wxListEvent& evt) {
-//    mDataList->update(wxGetApp().GetMortgageData());
-//    mDataBook->update(wxGetApp().GetMortgageData());
-//    std::cout << ">>Field Changed" << std::endl;
-//}
-//
-//void mcMain::OnScroll(wxScrollEvent& evt) {
-//    
-//}
