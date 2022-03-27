@@ -37,7 +37,7 @@ public:
         return cin;
     }
     
-    const string& getText() const { return prTxt;}
+    const string& get() const { return prTxt;}
     T& getDataRef () const {return dataRef;}
     
     friend istream& operator>>(istream& in, QueryToType<T>& q);

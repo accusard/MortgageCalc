@@ -34,7 +34,7 @@ mcChildFrame::mcChildFrame(wxMDIParentFrame* parent, const wxString& name, const
     for(int i = 0; i < prompts.size(); i++) {
         mDataList->bindFields(prompts[i], i, 1);
         wxPoint pos = wxPoint(columnwidth*2, (i+1) * GetFont().GetPixelSize().y);
-        mSliders.push_back(MakeSlider(this, mcID_SLIDER+i, pos, prompts[i].getData(), 0, prompts[i].getMax()));
+//        mSliders.push_back(MakeSlider(this, mcID_SLIDER+i, pos, prompts[i].getData(), 0, prompts[i].getMax()));
     }
 }
 
