@@ -8,52 +8,40 @@
 #include "mcReport.hpp"
 #include "mcData.hpp"
 #include "mCalculator.h"
+#include "Currency.hpp"
 #include "wx/listctrl.h"
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 
-FormatDollar::FormatDollar(const float value) {
-    formattedString = "$";
-    unformatted = value;
-    dollar = unformatted;
-    fractionDollar = unformatted - dollar;
-}
 
-const std::string FormatDollar::toString() {
-    stringstream dollarStr, centStr;
-    dollarStr << dollar;
-    centStr << setprecision(2) << std::fixed << fractionDollar;
-    
-    unsigned long len = strlen(dollarStr.str().c_str());
-    const int offset = len%3;
-    
-    for(int i = 0; i < len; ++i) {
-        if(i%3 == offset && i) {
-            formattedString += ',';
-        }
-        formattedString += dollarStr.str().at(i);
+void ReportList::print(wxListView* target) {
+    while(!mList.empty()) {
+        wxString s = mList.front();
+        target->InsertItem(0,s);
+        mList.pop();
     }
-    std::string newcent = centStr.str().erase(0,1);
-    formattedString += newcent;
-    
-    return formattedString;
 }
 
-SummaryReport::SummaryReport(mcData& dataRef, wxListView* list, const int columnWidth) {
+SummaryReport::SummaryReport(mcData& dataRef, wxListView* list) {
     dataRef.recalculateMortgage();
     
     // prints out the borrowers
-//    std::string head("Borrower(s): ");
-//    for(auto b : dataRef.Borrowers) {
-//        head + b.getName().l + ", " + b.getName().f + " " + b.getName().m.front() + ".";
-//        if(b !=  dataRef.Borrowers.back())
-//            head + "; ";
-//    }
-//    mList.push(head);
+    if(!dataRef.Borrowers.empty()) {
+        std::string head("Borrower(s): ");
+        for(auto b : dataRef.Borrowers) {
+            head + b.getName().l + ", " + b.getName().f + " " + b.getName().m.front() + ".";
+            if(b !=  dataRef.Borrowers.back())
+                head + "; ";
+        }
+        mList.push(head);
+    }
     
     const float amount = dataRef.loanAmount;
     const int years = dataRef.termYears;
     const float interest = dataRef.percentInterest;
     const float purchase = dataRef.purchasePrice;
-    
+    const int colWidth = 500;
     stringstream intStr;
     intStr << setprecision(2) << std::fixed << dataRef.percentInterest;
     
@@ -66,20 +54,36 @@ SummaryReport::SummaryReport(mcData& dataRef, wxListView* list, const int column
     mList.push("  Private Mortgage Insurance: " + FormatDollar(mCalculator::getPrivateMortgageInsurance(amount)).toString() + "\n" + "\n");
     mList.push("Total Monthly Payments: " + FormatDollar(mCalculator::getMonthlyPayments(purchase, amount, years, interest)).toString() + "\n" + "\n");
     
-    list->AppendColumn("", wxLIST_FORMAT_LEFT, columnWidth);
-    while(!mList.empty()) {
-        wxString s = mList.front();
-        list->InsertItem(0,s);
-        mList.pop();
-    }
-}
-
-MortgageReport::MortgageReport() {
-
-}
-
-void AmortizationReport::format(mcData& dref, wxListView* list) {
+    list->AppendColumn("", wxLIST_FORMAT_LEFT, colWidth);
     
+    print(list);
+}
+
+MortgageReport::MortgageReport(mcData& dref, wxListView* list) {
+    list->AppendColumn("", wxLIST_FORMAT_LEFT, 500);
+    if(!dref.Borrowers.empty()) {
+        dref.Borrowers.clear();
+    }
+    Borrower b1 = Borrower(Name("Vanny"));
+    b1.calcEarnings(18.30f);
+    b1.setMonthlyDebts(150.f);
+    dref.Borrowers.push_back(b1);
+    
+    Borrower b2 = Borrower(Name("Charann"));
+    b2.calcEarnings(19.f);
+    b2.setMonthlyDebts(250.f);
+    dref.Borrowers.push_back(b2);
+    
+    DTIReport dtiReport = DTIReport(dref);
+    dtiReport.print(list);
+    
+    SummaryReport(dref, list);
+    BorrowersReport bReport = BorrowersReport(dref.Borrowers);
+    bReport.print(list);
+
+}
+
+AmortizationReport::AmortizationReport(mcData& dref, wxListView* list) {
     list->AppendColumn(" ");
     list->AppendColumn("Payment");
     list->AppendColumn("Principal");
@@ -112,14 +116,15 @@ void AmortizationReport::format(mcData& dref, wxListView* list) {
     }
 }
 
-BorrowersReport::BorrowersReport() {
-    if(mBorrowers.size() != 0) {
+BorrowersReport::BorrowersReport(std::vector<struct Borrower> borrowers) : mBorrowers(borrowers){
+    if(borrowers.size() != 0) {
         for(auto b : mBorrowers) {
-            cout << "--- " << b.getName().f << " ---" << endl;
-            cout << "Gross Weekly: $" << b.getWeeklyEarnings() << " - ";
-            cout << "Gross Monthly: $" << b.getMonthlyEarnings() << " - ";
-            cout << "Debts: $" << b.getMonthlyDebts() << "/month" << endl;
-            cout << endl;
+            mList.push("\n");
+            mList.push("Debts: " + FormatDollar(b.getMonthlyDebts()).toString() + "/month" + "\n");
+            mList.push("Gross Monthly: " + FormatDollar(b.getMonthlyEarnings()).toString());
+            mList.push("Gross Weekly: " + FormatDollar(b.getWeeklyEarnings()).toString());
+            mList.push("Hourly Rate: " + FormatDollar(b.getHourlyRate()).toString());
+            mList.push("--- " + b.getName().f + " ---" + "\n");
         }
     }
 }
@@ -134,23 +139,24 @@ DTIReport::DTIReport(mcData& dRef) {
     float otDays = ((dRef.getBorrowersPayRates() * 1.5) * 8) + ((dRef.getBorrowersPayRates() * 2.f) * 2); // based on 10 hr shifts
     float otDaysToCoverMortgage = ((monthlyIncomeNeeded-totalMonthlyGross ) * 12) / otDays;
     float cashAfterDebts = totalMonthlyGross - (dRef.getTotalMonthlyDebts() + monthlyMortgagePayment);
+    stringstream sdti, sdtiCur;
+    sdti << setprecision(2) << std::fixed << ToPercent(mCalculator::DTI_RATIO);
+    sdtiCur << setprecision(2) << std::fixed << ToPercent(dti);
     
-    
-    cout << "Debt-To-Income ratio: " << ToPercent(dti) << "%" << endl;
     if(dti >= mCalculator::DTI_RATIO) {
         float payRateNeeded = ((monthlyIncomeNeeded * 12) / 52) / 40;
-        cout << "Payrate $" << dRef.getBorrowersPayRates() << "/hr " << endl;
-        cout << "Additional income to meet " << ToPercent(mCalculator::DTI_RATIO) << "% DTI: $" << monthlyIncomeNeeded-totalMonthlyGross << "/month" << endl;
-        cout << "Overtime days per year required to cover mortgage: " << otDaysToCoverMortgage << endl;
-        cout << "Gross remaining after debts $" << cashAfterDebts << "/month" << endl;
-        cout << ".. or find a new job that pays $" << payRateNeeded << "/hr" << endl;
+        mList.push(".. or find a new job that pays " + FormatDollar(payRateNeeded).toString() + "/hr" + "\n");
+        mList.push("Gross remaining after debts " + FormatDollar(cashAfterDebts).toString() + "/month" + "\n");
+        mList.push("Overtime days per year required to cover mortgage: " + std::to_string(otDaysToCoverMortgage) + "\n");
+        mList.push("Additional income to meet " + sdti.str() + "% DTI: " + FormatDollar(monthlyIncomeNeeded-totalMonthlyGross).toString() + "/month" + "\n");
+        mList.push("Payrate " + FormatDollar(dRef.getBorrowersPayRates()).toString() + "/hr " + "\n");
     } else {
-        cout << "Congratulations! " << endl;
-        cout << "Your combined payrates of $" << dRef.getBorrowersPayRates() << "/hr ";
-        cout << "totaling $" << totalMonthlyGross << "/month meets the " << ToPercent(mCalculator::DTI_RATIO) << "% dti ratio!" << endl;
-        cout << "Total monthly gross remaining after debts $" << cashAfterDebts << endl;
-        
-        cout << ".. in which $" << totalMonthlyGross * (mCalculator::DTI_RATIO - dti) << " can comfortably go towards other debts!" << endl;
-        cout << ".. with a remainder of $" << totalMonthlyGross * (1.f - mCalculator::DTI_RATIO) << endl;
+        mList.push(".. with a remainder of " + FormatDollar(totalMonthlyGross * (1.f - mCalculator::DTI_RATIO)).toString() + "\n");
+        mList.push(".. in which " + FormatDollar(totalMonthlyGross * (mCalculator::DTI_RATIO - dti)).toString() + " can comfortably go towards other debts!" + "\n");
+        mList.push("Total monthly gross remaining after debts " + FormatDollar(cashAfterDebts).toString() + "\n");
+        mList.push("totaling " + FormatDollar(totalMonthlyGross).toString() + "/month meets the " + sdti.str() + "% dti ratio!" + "\n");
+        mList.push("Your combined payrates of " + FormatDollar(dRef.getBorrowersPayRates()).toString() + "/hr ");
+        mList.push("Congratulations! ");
     }
+    mList.push("Debt-To-Income ratio: " + sdtiCur.str() + "%" + "\n");
 }

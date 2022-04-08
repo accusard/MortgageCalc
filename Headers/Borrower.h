@@ -16,6 +16,7 @@ using namespace std;
 
 struct Name {
     Name();
+    Name(const string& name);
     string f, m, l;
     const bool operator!=(const Name& other) const;
     friend istream& operator>>(istream& cin, Name& fullName);

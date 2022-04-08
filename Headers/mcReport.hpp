@@ -9,28 +9,14 @@
 #define mcReport_hpp
 
 #include <queue>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
+
 
 struct mcData;
 class wxListView;
 
-class FormatDollar  {
-public:
-    FormatDollar(const float val);
-    const std::string toString();
-    
-protected:
-    std::string formattedString;
-    int dollar;
-    float fractionDollar;
-    float unformatted;
-    
-};
 
 struct ReportList {
-    const std::queue<std::string> get() const {return mList;}
+    void print(wxListView* target);
     
 protected:
     std::queue<std::string> mList;
@@ -39,14 +25,13 @@ protected:
 
 class SummaryReport : public ReportList {
 public:
-    SummaryReport(mcData& dataRef, wxListView* list, const int columnWidth);
+    SummaryReport(mcData& dataRef, wxListView* list);
     
 };
 
-class MortgageReport : public ReportList {
+class MortgageReport {
 public:
-    MortgageReport();
-    
+    MortgageReport(mcData& dref, wxListView* list);
     
 private:
     
@@ -54,9 +39,7 @@ private:
 
 class AmortizationReport {
 public:
-    AmortizationReport() {}
-    void format(mcData& dref, wxListView* list);
-    
+    AmortizationReport(mcData& dref, wxListView* list);
     ~AmortizationReport() {};
     
 private:
@@ -65,14 +48,14 @@ private:
 
 class BorrowersReport : public ReportList {
 public:
-    BorrowersReport();
+    BorrowersReport(std::vector<struct Borrower> borrowers);
     
 private:
     std::vector<struct Borrower> mBorrowers;
     
 };
 
-class DTIReport {
+class DTIReport : public ReportList {
 public:
     DTIReport(mcData& dRef);
 };

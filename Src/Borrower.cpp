@@ -76,6 +76,7 @@ istream& operator>>(istream& cin, QueryToType<int>& q) {
 //}
 
 Name::Name() : f(), m(), l() {}
+Name::Name(const string& name) : f(name), m(), l() {}
 
 const Name& Borrower::getName() const {
     return name;
