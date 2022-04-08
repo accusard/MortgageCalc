@@ -21,9 +21,9 @@ public:
     virtual const bool update(struct mcData* data) override;
     
 private:
-    wxStaticText* mOverview = nullptr;
+    wxListView* mOverview = nullptr;
 //    wxListView* mOverview = nullptr;
-    wxStaticText* mReport = nullptr;
+    wxListView* mReport = nullptr;
     wxListView* mSchedule = nullptr;
 };
 
