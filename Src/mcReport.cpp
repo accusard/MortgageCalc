@@ -24,24 +24,13 @@ void ReportList::print(wxListView* target) {
 }
 
 SummaryReport::SummaryReport(mcData& dataRef, wxListView* list) {
-    dataRef.recalculateMortgage();
-    
-    // prints out the borrowers
-    if(!dataRef.Borrowers.empty()) {
-        std::string head("Borrower(s): ");
-        for(auto b : dataRef.Borrowers) {
-            head + b.getName().l + ", " + b.getName().f + " " + b.getName().m.front() + ".";
-            if(b !=  dataRef.Borrowers.back())
-                head + "; ";
-        }
-        mList.push(head);
-    }
-    
+//    dataRef.recalculateMortgage();
     const float amount = dataRef.loanAmount;
     const int years = dataRef.termYears;
     const float interest = dataRef.percentInterest;
     const float purchase = dataRef.purchasePrice;
     const int colWidth = 500;
+    
     stringstream intStr;
     intStr << setprecision(2) << std::fixed << dataRef.percentInterest;
     
@@ -56,7 +45,7 @@ SummaryReport::SummaryReport(mcData& dataRef, wxListView* list) {
     
     list->AppendColumn("", wxLIST_FORMAT_LEFT, colWidth);
     
-    print(list);
+//    print(list);
 }
 
 MortgageReport::MortgageReport(mcData& dref, wxListView* list) {
@@ -66,21 +55,22 @@ MortgageReport::MortgageReport(mcData& dref, wxListView* list) {
     }
     Borrower b1 = Borrower(Name("Vanny"));
     b1.calcEarnings(18.30f);
-    b1.setMonthlyDebts(150.f);
+    b1.setMonthlyDebts(0.f);
     dref.Borrowers.push_back(b1);
     
     Borrower b2 = Borrower(Name("Charann"));
     b2.calcEarnings(19.f);
-    b2.setMonthlyDebts(250.f);
+    b2.setMonthlyDebts(0.f);
     dref.Borrowers.push_back(b2);
     
     DTIReport dtiReport = DTIReport(dref);
     dtiReport.print(list);
     
-    SummaryReport(dref, list);
-    BorrowersReport bReport = BorrowersReport(dref.Borrowers);
-    bReport.print(list);
+    SummaryReport sReport = SummaryReport(dref, list);
+    sReport.print(list);
 
+    BorrowersReport bReport = BorrowersReport(dref.Borrowers, list);
+    bReport.print(list);
 }
 
 AmortizationReport::AmortizationReport(mcData& dref, wxListView* list) {
@@ -116,7 +106,8 @@ AmortizationReport::AmortizationReport(mcData& dref, wxListView* list) {
     }
 }
 
-BorrowersReport::BorrowersReport(std::vector<struct Borrower> borrowers) : mBorrowers(borrowers){
+BorrowersReport::BorrowersReport(std::vector<struct Borrower> borrowers, wxListView* list) : mBorrowers(borrowers){
+    
     if(borrowers.size() != 0) {
         for(auto b : mBorrowers) {
             mList.push("\n");
@@ -127,10 +118,20 @@ BorrowersReport::BorrowersReport(std::vector<struct Borrower> borrowers) : mBorr
             mList.push("--- " + b.getName().f + " ---" + "\n");
         }
     }
+    // prints out the borrowers
+    if(!mBorrowers.empty()) {
+        mList.push("\n");
+        std::string head("Borrower(s): ");
+        for(auto b : mBorrowers) {
+            head + b.getName().l + ", " + b.getName().f + " " + b.getName().m.front() + ".";
+            if(b !=  mBorrowers.back())
+                head + "; ";
+        }
+        mList.push(head);
+    }
 }
 
 DTIReport::DTIReport(mcData& dRef) {
-    dRef.recalculateMortgage();
     
     float totalMonthlyGross = (dRef.getTotalYearlyGross() /12);
     float monthlyMortgagePayment = mCalculator::getMonthlyPayments(dRef.purchasePrice, dRef.loanAmount, dRef.termYears, dRef.percentInterest);
@@ -139,24 +140,25 @@ DTIReport::DTIReport(mcData& dRef) {
     float otDays = ((dRef.getBorrowersPayRates() * 1.5) * 8) + ((dRef.getBorrowersPayRates() * 2.f) * 2); // based on 10 hr shifts
     float otDaysToCoverMortgage = ((monthlyIncomeNeeded-totalMonthlyGross ) * 12) / otDays;
     float cashAfterDebts = totalMonthlyGross - (dRef.getTotalMonthlyDebts() + monthlyMortgagePayment);
-    stringstream sdti, sdtiCur;
-    sdti << setprecision(2) << std::fixed << ToPercent(mCalculator::DTI_RATIO);
-    sdtiCur << setprecision(2) << std::fixed << ToPercent(dti);
+    
+    stringstream formattedDefaultDTI, formattedBorrowersDTI;
+    formattedDefaultDTI << setprecision(2) << std::fixed << ToPercent(mCalculator::DTI_RATIO);
+    formattedBorrowersDTI << setprecision(2) << std::fixed << ToPercent(dti);
     
     if(dti >= mCalculator::DTI_RATIO) {
         float payRateNeeded = ((monthlyIncomeNeeded * 12) / 52) / 40;
         mList.push(".. or find a new job that pays " + FormatDollar(payRateNeeded).toString() + "/hr" + "\n");
         mList.push("Gross remaining after debts " + FormatDollar(cashAfterDebts).toString() + "/month" + "\n");
         mList.push("Overtime days per year required to cover mortgage: " + std::to_string(otDaysToCoverMortgage) + "\n");
-        mList.push("Additional income to meet " + sdti.str() + "% DTI: " + FormatDollar(monthlyIncomeNeeded-totalMonthlyGross).toString() + "/month" + "\n");
+        mList.push("Additional income to meet " + formattedDefaultDTI.str() + "% DTI: " + FormatDollar(monthlyIncomeNeeded-totalMonthlyGross).toString() + "/month" + "\n");
         mList.push("Payrate " + FormatDollar(dRef.getBorrowersPayRates()).toString() + "/hr " + "\n");
     } else {
         mList.push(".. with a remainder of " + FormatDollar(totalMonthlyGross * (1.f - mCalculator::DTI_RATIO)).toString() + "\n");
         mList.push(".. in which " + FormatDollar(totalMonthlyGross * (mCalculator::DTI_RATIO - dti)).toString() + " can comfortably go towards other debts!" + "\n");
         mList.push("Total monthly gross remaining after debts " + FormatDollar(cashAfterDebts).toString() + "\n");
-        mList.push("totaling " + FormatDollar(totalMonthlyGross).toString() + "/month meets the " + sdti.str() + "% dti ratio!" + "\n");
+        mList.push("totaling " + FormatDollar(totalMonthlyGross).toString() + "/month meets the " + formattedDefaultDTI.str() + "% dti ratio!" + "\n");
         mList.push("Your combined payrates of " + FormatDollar(dRef.getBorrowersPayRates()).toString() + "/hr ");
         mList.push("Congratulations! ");
     }
-    mList.push("Debt-To-Income ratio: " + sdtiCur.str() + "%" + "\n");
+    mList.push("Debt-To-Income ratio: " + formattedBorrowersDTI.str() + "%" + "\n");
 }

@@ -76,10 +76,12 @@ void mcData::setDownpayment(const float down) {
 
 void mcData::setTerms(const int years) {
     termYears = years;
+    recalculateMortgage();
 }
 
 void mcData::setInterest(const float percent) {
     percentInterest = percent;
+    recalculateMortgage();
 }
 
 void mcData::makeHashTable(std::unordered_map<std::string, float>& hash) {

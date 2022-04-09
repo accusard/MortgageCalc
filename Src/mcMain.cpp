@@ -24,7 +24,7 @@ mcMain::mcMain() : wxMDIParentFrame(nullptr, wxID_ANY, DEFAULT_WINDOW_NAME, DEFA
     mMenuBar = new wxMenuBar();
     wxMenu *MenuFile = new wxMenu();
     MenuFile->Append(wxID_NEW, "&New\tCtrl+N");
-    MenuFile->Append(wxID_OPEN, "&Open\tCtrl+O");
+//    MenuFile->Append(wxID_OPEN, "&Open\tCtrl+O");
     MenuFile->Append(wxID_SAVE, "&Save\tCtrl+S");
     MenuFile->Append(wxID_EXIT, "Quit");
     mMenuBar->Append(MenuFile, "File");

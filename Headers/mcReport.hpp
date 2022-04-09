@@ -29,7 +29,7 @@ public:
     
 };
 
-class MortgageReport {
+class MortgageReport : public ReportList {
 public:
     MortgageReport(mcData& dref, wxListView* list);
     
@@ -48,7 +48,7 @@ private:
 
 class BorrowersReport : public ReportList {
 public:
-    BorrowersReport(std::vector<struct Borrower> borrowers);
+    BorrowersReport(std::vector<struct Borrower> borrowers, wxListView* list);
     
 private:
     std::vector<struct Borrower> mBorrowers;

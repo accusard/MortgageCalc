@@ -25,9 +25,14 @@ const bool mcBook::update(mcData* data) {
         mSchedule->ClearAll();
         mReport->ClearAll();
         
-        SummaryReport report = SummaryReport(*data, mOverview);
+        SummaryReport summaryReport = SummaryReport(*data, mOverview);
+        summaryReport.print(mOverview);
+        
+        MortgageReport mortgageReport = MortgageReport(*data, mReport);
+        mortgageReport.print(mReport);
+        
         AmortizationReport schedule = AmortizationReport(*data, mSchedule);
-        MortgageReport(*data, mReport);
+        
     
         return true;
     }
