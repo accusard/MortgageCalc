@@ -49,5 +49,5 @@ This project is licensed under the [MIT License](LICENSE).
 ### Contact
 For questions or support, reach out at:
 - **Email:** [vanny.sou.24@gmail.com](mailto:vanny.sou.24@gmail.com)
-- **GitHub:** [github.com/VannySou](https://github.com/VannySou)
+- **GitHub:** [github.com/accusard](https://github.com/accusard)
 
